@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "turnstile-engine"
+version = "3.0.0"
+description = "Bayesian Temporal Inversion Engine — MiroFish predicts what happens. Turnstile proves why it must."
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24.0", "scipy>=1.10.0"]
+
+[project.optional-dependencies]
+ui = ["streamlit>=1.30.0"]
+api = ["fastapi>=0.100.0", "uvicorn>=0.20.0"]
+llm = ["openai>=1.0.0"]
+all = ["streamlit>=1.30.0", "fastapi>=0.100.0", "uvicorn>=0.20.0", "openai>=1.0.0"]
+
+[project.urls]
+Repository = "https://github.com/BAESY2/Turnstile"
