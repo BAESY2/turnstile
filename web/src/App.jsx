@@ -12,38 +12,55 @@ const LANG = {
 
 const DEMOS = {
   "NVIDIA stock if China bans rare earth exports": {
-    verdict: "NVDA drops to $108 by Friday close.",
+    verdict: "NVDA drops to $158 by Friday close.",
     direction: "DOWN", dirColor: C.r,
-    target: "$108 (-11.5% from $122)",
+    target: "$158 (-12.3% from $180)",
     deadline: "Friday March 21 market close",
-    mechanism: "$340M in call options expire worthless as rare earth supply panic triggers institutional selling cascade. Market makers delta-hedge by shorting, amplifying the move.",
-    recovery: "Recovers to $116 within 2 weeks as TSMC confirms Australian rare earth pipeline operational.",
+    mechanism: "$1.2B in call options expire worthless as rare earth supply panic triggers institutional selling cascade. Market makers delta-hedge by shorting, amplifying the move below $165 support.",
+    recovery: "Recovers to $172 within 2 weeks as TSMC confirms Australian rare earth pipeline operational.",
     confidence: 74,
     te: "TSMC alt supply announcement", tw: "72h",
-    hidden: "NVIDIA quietly built 6-month rare earth buffer since Q3 2025. This isn't public. When it leaks, the recovery accelerates.",
-    wrong: "NVDA holds $118 for 2 consecutive trading days — means institutions are buying the dip faster than panic sells.",
-    sc: [{ n: "Drop to $108, recover $116", p: 45 }, { n: "Sustained below $110", p: 25 }, { n: "Holds above $118", p: 20 }, { n: "Crash below $100", p: 10 }],
-    dr: [{ n: "Rare earth buffer (6mo)", v: 88, d: "u" }, { n: "Options expiry cascade", v: 76, d: "d" }, { n: "Institutional panic sell", v: 72, d: "d" }, { n: "TSMC alt supply speed", v: 65, d: "u" }, { n: "AI capex commitment", v: 42, d: "u" }],
+    hidden: "NVIDIA quietly built 6-month rare earth buffer since Q3 2025. This isn't public. When it leaks at GTC 2026, the recovery accelerates.",
+    wrong: "NVDA holds $170 for 2 consecutive trading days — means institutions are buying the dip faster than panic sells.",
+    sc: [{ n: "Drop to $158, recover $172", p: 45 }, { n: "Sustained below $160", p: 25 }, { n: "Holds above $170", p: 20 }, { n: "Crash below $145", p: 10 }],
+    dr: [{ n: "Rare earth buffer (6mo)", v: 88, d: "u" }, { n: "Options expiry cascade", v: 76, d: "d" }, { n: "Institutional panic sell", v: 72, d: "d" }, { n: "TSMC alt supply speed", v: 65, d: "u" }, { n: "GTC 2026 catalyst", v: 42, d: "u" }],
     tl: [{ t: "0h", b: 45, u: 20, d: 25 }, { t: "4h", b: 30, u: 12, d: 42 }, { t: "1d", b: 35, u: 15, d: 35 }, { t: "2d", b: 38, u: 20, d: 28 }, { t: "3d", b: 42, u: 25, d: 22 }, { t: "1w", b: 48, u: 32, d: 14 }, { t: "2w", b: 52, u: 35, d: 10 }],
     rd: [{ a: "Impact", v: 82 }, { a: "Speed", v: 90 }, { a: "Reversibility", v: 65 }, { a: "Contagion", v: 50 }, { a: "Certainty", v: 70 }, { a: "Precedent", v: 45 }],
     math: { nodes: ["Ban","TSMC","Buffer","Panic","Recover","Price"], adj: [[0,.85,.70,0,0,0],[0,0,0,.30,.65,0],[0,0,0,.15,.60,0],[0,0,0,0,.20,.55],[0,0,0,0,0,.72],[0,0,0,0,0,0]], marginals: [1.0,.85,.70,.37,.68,.62], inv: [[0,0,0,0,0,0],[.92,0,0,0,0,0],[.78,0,0,0,0,0],[0,.34,.11,0,0,0],[0,.52,.46,.08,0,0],[0,0,0,.33,.67,0]], efwd: [.92,.61,.55,.80,.35,0], einv: [0,.12,.15,.72,.68,.45], tidx: 3 },
   },
   "Bitcoin price Monday noon KST": {
-    verdict: "BTC drops to $69,200 by Monday 12:00 KST.",
+    verdict: "BTC drops to $67,500 by Monday 12:00 KST.",
     direction: "DOWN", dirColor: C.r,
-    target: "$69,200 (-2.9% from $71,287)",
+    target: "$67,500 (-4.9% from $70,982)",
     deadline: "Monday March 17, 12:00 KST",
-    mechanism: "Pre-FOMC risk-off triggers $180M long liquidation below $70K. Market makers pull bids ahead of Wednesday's rate decision, creating a liquidity vacuum.",
-    recovery: "Bounces to $71.5K within 48h post-FOMC as ETF inflows ($50M+/day) absorb the dip and shorts cover.",
-    confidence: 64,
-    te: "FOMC statement Wednesday 2PM EST", tw: "Mar 18",
-    hidden: "Short interest hit 6-month high but open interest declining. Shorts are overleveraged with thin liquidity — any squeeze attempt above $72.8K forces $240M in liquidations.",
-    wrong: "BTC breaks and holds $72,800 before Monday — means shorts are already covering and the pre-FOMC dip won't materialize.",
-    sc: [{ n: "Dip to $69.2K, bounce $71.5K", p: 42 }, { n: "Holds $70-71K range", p: 28 }, { n: "Squeeze above $73K", p: 18 }, { n: "Flash crash below $67K", p: 12 }],
-    dr: [{ n: "FOMC risk-off selling", v: 82, d: "d" }, { n: "Long liquidation $180M", v: 75, d: "d" }, { n: "ETF inflow floor", v: 70, d: "u" }, { n: "Short squeeze above $72.8K", v: 55, d: "u" }, { n: "Mideast escalation", v: 40, d: "d" }],
+    mechanism: "Pre-FOMC risk-off triggers $220M long liquidation below $69K. Market makers pull bids ahead of Wednesday's rate decision, creating a liquidity vacuum below key support.",
+    recovery: "Bounces to $72K within 48h post-FOMC as ETF inflows ($65M+/day) absorb the dip and shorts cover.",
+    confidence: 62,
+    te: "FOMC statement Wednesday 2PM EST", tw: "Mar 19",
+    hidden: "Short interest hit 8-month high but open interest declining. Shorts are overleveraged with thin liquidity — any squeeze attempt above $73K forces $310M in liquidations.",
+    wrong: "BTC breaks and holds $73,000 before Monday — means shorts are already covering and the pre-FOMC dip won't materialize.",
+    sc: [{ n: "Dip to $67.5K, bounce $72K", p: 42 }, { n: "Holds $69-70K range", p: 28 }, { n: "Squeeze above $74K", p: 18 }, { n: "Flash crash below $65K", p: 12 }],
+    dr: [{ n: "FOMC risk-off selling", v: 82, d: "d" }, { n: "Long liquidation $220M", v: 75, d: "d" }, { n: "ETF inflow floor", v: 70, d: "u" }, { n: "Short squeeze above $73K", v: 55, d: "u" }, { n: "Mideast escalation", v: 40, d: "d" }],
     tl: [{ t: "Now", b: 42, u: 18, d: 28 }, { t: "6h", b: 38, u: 16, d: 32 }, { t: "12h", b: 35, u: 15, d: 36 }, { t: "18h", b: 38, u: 18, d: 30 }, { t: "24h", b: 42, u: 22, d: 24 }],
     rd: [{ a: "Volatility", v: 55 }, { a: "Trend", v: 40 }, { a: "Volume", v: 65 }, { a: "Macro", v: 80 }, { a: "Technical", v: 60 }, { a: "Sentiment", v: 25 }],
     math: { nodes: ["Price","Fed","Long","Short","ETF","Out"], adj: [[0,.60,.45,.25,.65,0],[0,0,.50,0,0,.45],[0,0,0,0,0,.40],[0,0,0,0,0,.25],[0,0,0,0,0,.55],[0,0,0,0,0,0]], marginals: [1.0,.60,.52,.35,.65,.61], inv: [[0,0,0,0,0,0],[.88,0,0,0,0,0],[.70,.48,0,0,0,0],[.35,0,0,0,0,0],[.82,0,0,0,0,0],[0,.31,.26,.14,.29,0]], efwd: [.97,.72,.55,.68,.42,0], einv: [0,.08,.22,.55,.10,.82], tidx: 2 },
+  },
+  "Samsung Electronics KOSPI open forecast": {
+    verdict: "Samsung drops to ₩176,000 by Wednesday close KST.",
+    direction: "DOWN", dirColor: C.r,
+    target: "₩176,000 (-4.1% from ₩183,500)",
+    deadline: "Wednesday March 19, 15:30 KST",
+    mechanism: "₩800B institutional profit-taking as foreign investors dump ₩450B in pre-market block trades. Oil price surge from Mideast tension triggers macro risk-off across KOSPI tech names.",
+    recovery: "Dead cat bounce to ₩180,000 by Friday as retail buyers step in at 52-week support. Consolidation around ₩178,000-180,000 through next week.",
+    confidence: 66,
+    te: "Pension fund rebalancing block sell", tw: "48h",
+    hidden: "₩450B block sell order queued at ₩180,000 from national pension fund quarterly rebalancing. Combined with oil-driven won weakness, creates cascading sell pressure.",
+    wrong: "Holds ₩181,000 for first 2 hours of Tuesday trading — means institutional demand is absorbing the block sells.",
+    sc: [{ n: "Drop to ₩176K, bounce ₩180K", p: 44 }, { n: "Holds ₩180-182K range", p: 26 }, { n: "Rebounds above ₩185K", p: 18 }, { n: "Crash below ₩172K", p: 12 }],
+    dr: [{ n: "Foreign investor selling ₩450B", v: 84, d: "d" }, { n: "Pension fund rebalancing", v: 78, d: "d" }, { n: "HBM demand outlook", v: 72, d: "u" }, { n: "Won/USD weakness", v: 65, d: "d" }, { n: "Retail buy support", v: 48, d: "u" }],
+    tl: [{ t: "0h", b: 44, u: 18, d: 26 }, { t: "3h", b: 36, u: 14, d: 38 }, { t: "1d", b: 38, u: 16, d: 34 }, { t: "2d", b: 40, u: 20, d: 28 }, { t: "3d", b: 44, u: 24, d: 22 }, { t: "1w", b: 50, u: 30, d: 14 }],
+    rd: [{ a: "Impact", v: 78 }, { a: "Speed", v: 85 }, { a: "Certainty", v: 62 }, { a: "Contagion", v: 55 }],
+    math: { nodes: ["Sell","Foreign","Pension","Won","HBM","Price"], adj: [[0,.84,.78,0,0,0],[0,0,0,.65,0,.55],[0,0,0,0,0,.50],[0,0,0,0,0,.40],[0,0,0,0,0,.72],[0,0,0,0,0,0]], marginals: [1.0,.84,.78,.55,.72,.63], inv: [[0,0,0,0,0,0],[.90,0,0,0,0,0],[.82,0,0,0,0,0],[0,.58,0,0,0,0],[0,0,0,0,0,0],[0,.46,.42,.28,.52,0]], efwd: [.90,.58,.52,.78,.32,0], einv: [0,.10,.14,.68,.62,.48], tidx: 3 },
   },
 };
 const EXAMPLES = Object.keys(DEMOS);
@@ -59,27 +76,27 @@ const MathViz = ({ math }) => {
   useEffect(() => { if (step >= 1) { const iv = setInterval(() => setHl(h => (h + 1) % math.nodes.length), 400); return () => clearInterval(iv); } }, [step]);
   if (!math) return null;
   const cs = 34;
-  const MC = ({ val, inv, act }) => <div style={{ width: cs, height: cs, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: val > 0 ? "#fff" : "#222", background: val > 0 ? inv ? `rgba(0,212,255,${Math.min(val*.55,.45)})` : `rgba(14,165,233,${Math.min(val*.55,.45)})` : "transparent", border: act ? "1px solid #00d4ff" : "1px solid rgba(255,255,255,.03)", borderRadius: 2, transition: "all .3s", transform: act ? "scale(1.12)" : "scale(1)" }}>{val > 0 ? val.toFixed(2) : ""}</div>;
+  const MC = ({ val, inv, act }) => <div style={{ width: cs, height: cs, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: val > 0 ? "#fff" : "#aaa", background: val > 0 ? inv ? `rgba(0,212,255,${Math.min(val*.55,.45)})` : `rgba(14,165,233,${Math.min(val*.55,.45)})` : "transparent", border: act ? "1px solid #00d4ff" : "1px solid rgba(255,255,255,.03)", borderRadius: 2, transition: "all .3s", transform: act ? "scale(1.12)" : "scale(1)" }}>{val > 0 ? val.toFixed(2) : ""}</div>;
   return <div style={{ padding: "12px 0" }}>
     <div style={{ display: "flex", gap: 3, marginBottom: 14, justifyContent: "center", flexWrap: "wrap" }}>
-      {["DAG","Forward","Inversion","Entropy","Turnstile"].map((s, i) => <div key={i} style={{ padding: "3px 10px", borderRadius: 16, fontSize: 10, background: i === step ? "rgba(0,212,255,.12)" : "transparent", border: i === step ? "1px solid rgba(0,212,255,.2)" : "1px solid rgba(255,255,255,.03)", color: i < step ? C.g : i === step ? C.p : "#444" }}>{i < step ? "\u2713 " : ""}{s}</div>)}
+      {["DAG","Forward","Inversion","Entropy","Turnstile"].map((s, i) => <div key={i} style={{ padding: "3px 10px", borderRadius: 16, fontSize: 10, background: i === step ? "rgba(0,212,255,.12)" : "transparent", border: i === step ? "1px solid rgba(0,212,255,.2)" : "1px solid rgba(255,255,255,.03)", color: i < step ? C.g : i === step ? C.p : "#bbb" }}>{i < step ? "\u2713 " : ""}{s}</div>)}
     </div>
     <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
       <div><div style={{ fontSize: 9, color: C.p, letterSpacing: 2, fontWeight: 600, marginBottom: 4, textAlign: "center" }}>FORWARD A[i,j]</div>
-        {math.adj.map((row, i) => <div key={i} style={{ display: "flex", gap: 1, marginBottom: 1 }}><div style={{ width: cs, height: cs, display: "flex", alignItems: "center", fontSize: 7, color: "#555" }}>{math.nodes[i]?.slice(0, 4)}</div>{row.map((v, j) => <MC key={j} val={v} act={step >= 1 && hl === i} />)}</div>)}
+        {math.adj.map((row, i) => <div key={i} style={{ display: "flex", gap: 1, marginBottom: 1 }}><div style={{ width: cs, height: cs, display: "flex", alignItems: "center", fontSize: 7, color: "#aaa" }}>{math.nodes[i]?.slice(0, 4)}</div>{row.map((v, j) => <MC key={j} val={v} act={step >= 1 && hl === i} />)}</div>)}
       </div>
       {step >= 1 && <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", gap: 2 }}><div style={{ fontSize: 9, color: C.p, letterSpacing: 2, fontWeight: 600, marginBottom: 2 }}>P(node)</div>
-        {math.marginals.map((m, i) => <div key={i} style={{ display: "flex", alignItems: "center", gap: 4, height: cs }}><div style={{ width: 50, height: 3, background: "rgba(255,255,255,.03)", borderRadius: 2, overflow: "hidden" }}><div style={{ width: `${m*100}%`, height: "100%", background: i === hl ? C.p : `${C.p}55`, borderRadius: 2 }} /></div><span style={{ fontSize: 9, color: i === hl ? C.p : "#666", fontFamily: "monospace" }}>{m.toFixed(2)}</span></div>)}
+        {math.marginals.map((m, i) => <div key={i} style={{ display: "flex", alignItems: "center", gap: 4, height: cs }}><div style={{ width: 50, height: 3, background: "rgba(255,255,255,.03)", borderRadius: 2, overflow: "hidden" }}><div style={{ width: `${m*100}%`, height: "100%", background: i === hl ? C.p : `${C.p}55`, borderRadius: 2 }} /></div><span style={{ fontSize: 9, color: i === hl ? C.p : "#aaa", fontFamily: "monospace" }}>{m.toFixed(2)}</span></div>)}
       </div>}
       {step >= 2 && <div><div style={{ fontSize: 9, color: C.g, letterSpacing: 2, fontWeight: 600, marginBottom: 4, textAlign: "center" }}>INVERTED P(A|B)</div>
-        {math.inv.map((row, i) => <div key={i} style={{ display: "flex", gap: 1, marginBottom: 1 }}><div style={{ width: cs, height: cs, display: "flex", alignItems: "center", fontSize: 7, color: "#555" }}>{math.nodes[i]?.slice(0, 4)}</div>{row.map((v, j) => <MC key={j} val={v} inv act={step >= 2 && hl === j} />)}</div>)}
+        {math.inv.map((row, i) => <div key={i} style={{ display: "flex", gap: 1, marginBottom: 1 }}><div style={{ width: cs, height: cs, display: "flex", alignItems: "center", fontSize: 7, color: "#aaa" }}>{math.nodes[i]?.slice(0, 4)}</div>{row.map((v, j) => <MC key={j} val={v} inv act={step >= 2 && hl === j} />)}</div>)}
       </div>}
     </div>
     {step >= 3 && <Reveal delay={100}><div style={{ marginTop: 16 }}>
       <div style={{ fontSize: 9, color: C.a, letterSpacing: 2, fontWeight: 600, marginBottom: 6, textAlign: "center" }}>\u2207H = H_fwd \u2212 H_inv</div>
       <div style={{ display: "flex", gap: 3, justifyContent: "center" }}>{math.nodes.map((n, i) => { const g = math.efwd[i] - math.einv[i]; const isT = i === math.tidx; return <div key={i} style={{ textAlign: "center", width: 58 }}>
         <div style={{ height: 38, display: "flex", flexDirection: "column", justifyContent: "flex-end", alignItems: "center" }}><div style={{ width: 16, height: math.efwd[i] * 36, background: `${C.p}44`, borderRadius: "2px 2px 0 0" }} /></div>
-        <div style={{ fontSize: 7, padding: "2px 0", fontWeight: 600, color: isT ? C.a : "#777", background: isT ? `${C.a}15` : "transparent", borderRadius: 3, border: isT ? `1px solid ${C.a}33` : "none" }}>{n.slice(0,5)}{isT && <span style={{ fontSize: 6, display: "block", color: C.a }}>\u26A1</span>}</div>
+        <div style={{ fontSize: 7, padding: "2px 0", fontWeight: 600, color: isT ? C.a : "#bbb", background: isT ? `${C.a}15` : "transparent", borderRadius: 3, border: isT ? `1px solid ${C.a}33` : "none" }}>{n.slice(0,5)}{isT && <span style={{ fontSize: 6, display: "block", color: C.a }}>\u26A1</span>}</div>
         <div style={{ height: 38, display: "flex", alignItems: "flex-start", justifyContent: "center" }}><div style={{ width: 16, height: math.einv[i] * 36, background: `${C.g}44`, borderRadius: "0 0 2px 2px" }} /></div>
         <div style={{ fontSize: 8, fontFamily: "monospace", color: Math.abs(g) < .15 ? C.a : g > 0 ? C.p : C.g }}>{g > 0 ? "+" : ""}{g.toFixed(2)}</div>
       </div>; })}</div>
@@ -148,7 +165,7 @@ export default function Turnstile() {
     const pt = setInterval(() => setPhase(p => Math.min(p + 1, PH.length - 1)), 600);
     const m = DEMOS[text];
     if (m) { await new Promise(r => setTimeout(r, PH.length * 600 + 400)); clearInterval(pt); setPhase(PH.length); setResult(m); setLoading(false); return; }
-    if (!apiKey) { clearInterval(pt); setResult({ verdict: "API key required. Click \u26BF above. Demo scenarios work without it.", direction: "—", dirColor: "#888", target: "—", deadline: "—", mechanism: "—", confidence: 0 }); setLoading(false); return; }
+    if (!apiKey) { clearInterval(pt); setResult({ verdict: "API key required. Click \u26BF above. Demo scenarios work without it.", direction: "—", dirColor: "#bbb", target: "—", deadline: "—", mechanism: "—", confidence: 0 }); setLoading(false); return; }
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST", headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -158,48 +175,48 @@ export default function Turnstile() {
       const p = JSON.parse((data.content?.[0]?.text || "").replace(/```json|```/g, "").trim());
       p.dirColor = p.direction === "UP" ? C.g : C.r;
       clearInterval(pt); setPhase(PH.length); setResult(p);
-    } catch (e) { clearInterval(pt); setResult({ verdict: `Error: ${e.message}`, direction: "—", dirColor: "#888", confidence: 0 }); }
+    } catch (e) { clearInterval(pt); setResult({ verdict: `Error: ${e.message}`, direction: "—", dirColor: "#bbb", confidence: 0 }); }
     setLoading(false);
   };
 
   const r = result;
-  const dc = d => d === "u" ? C.g : d === "d" ? C.r : "#888";
+  const dc = d => d === "u" ? C.g : d === "d" ? C.r : "#bbb";
   const di = d => d === "u" ? "\u25B2" : d === "d" ? "\u25BC" : "\u25CF";
 
   return (
     <div style={{ fontFamily: "'SF Pro Display',-apple-system,sans-serif", color: "#d4d4d4", maxWidth: 740, margin: "0 auto", padding: "0 20px" }}>
-      <style>{`@keyframes bk{50%{opacity:0}}@keyframes si{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}@keyframes bg{from{transform:scaleX(0)}to{transform:scaleX(1)}}@keyframes gl{0%,100%{border-color:rgba(0,212,255,.1)}50%{border-color:rgba(0,212,255,.28)}}@keyframes br{0%,100%{opacity:.3}50%{opacity:.8}}@keyframes pu{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,.4)}50%{box-shadow:0 0 0 6px rgba(0,212,255,0)}}input::placeholder{color:#444}input:focus{border-color:rgba(0,212,255,.35)!important}`}</style>
+      <style>{`@keyframes bk{50%{opacity:0}}@keyframes si{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}@keyframes bg{from{transform:scaleX(0)}to{transform:scaleX(1)}}@keyframes gl{0%,100%{border-color:rgba(0,212,255,.1)}50%{border-color:rgba(0,212,255,.28)}}@keyframes br{0%,100%{opacity:.3}50%{opacity:.8}}@keyframes pu{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,.4)}50%{box-shadow:0 0 0 6px rgba(0,212,255,0)}}input::placeholder{color:#888}input:focus{border-color:rgba(0,212,255,.35)!important}`}</style>
 
       {showKey && <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.75)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999 }} onClick={() => setShowKey(false)}><div onClick={e => e.stopPropagation()} style={{ background: "#111", border: "1px solid rgba(0,212,255,.12)", borderRadius: 16, padding: "24px 28px", width: 400, maxWidth: "90vw" }}>
         <div style={{ fontSize: 16, fontWeight: 600, color: C.p, marginBottom: 4 }}>{t.api}</div>
-        <div style={{ fontSize: 12, color: "#888", marginBottom: 16 }}>{t.apiD}</div>
+        <div style={{ fontSize: 12, color: "#bbb", marginBottom: 16 }}>{t.apiD}</div>
         <input value={keyIn} onChange={e => setKeyIn(e.target.value)} placeholder="sk-ant-..." type="password" style={{ width: "100%", padding: "12px 16px", background: "rgba(255,255,255,.04)", border: "1px solid rgba(0,212,255,.12)", borderRadius: 10, color: "#e4e4e4", fontSize: 13, fontFamily: "monospace", outline: "none", marginBottom: 12 }} />
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-          <button onClick={() => setShowKey(false)} style={{ padding: "8px 20px", background: "transparent", border: "1px solid rgba(255,255,255,.06)", borderRadius: 8, color: "#888", cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}>{t.cn}</button>
+          <button onClick={() => setShowKey(false)} style={{ padding: "8px 20px", background: "transparent", border: "1px solid rgba(255,255,255,.06)", borderRadius: 8, color: "#bbb", cursor: "pointer", fontSize: 13, fontFamily: "inherit" }}>{t.cn}</button>
           <button onClick={() => { setApiKey(keyIn); setShowKey(false); }} style={{ padding: "8px 20px", background: C.p, border: "none", borderRadius: 8, color: "#000", cursor: "pointer", fontSize: 13, fontFamily: "inherit", fontWeight: 600 }}>{t.sv}</button>
         </div>
       </div></div>}
 
       <div style={{ textAlign: "center", padding: "2rem 0 .8rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <div style={{ display: "flex", gap: 3 }}>{Object.keys(LANG).map(l => <button key={l} onClick={() => setLang(l)} style={{ padding: "2px 8px", background: lang === l ? "rgba(0,212,255,.1)" : "transparent", border: lang === l ? "1px solid rgba(0,212,255,.2)" : "1px solid rgba(255,255,255,.03)", borderRadius: 5, color: lang === l ? C.p : "#555", cursor: "pointer", fontSize: 10, fontFamily: "inherit" }}>{{ en: "EN", ko: "\uD55C", zh: "\u4E2D", ja: "\u65E5" }[l]}</button>)}</div>
-          <button onClick={() => { setKeyIn(apiKey); setShowKey(true); }} style={{ padding: "3px 10px", background: apiKey ? "rgba(34,197,94,.08)" : "rgba(255,255,255,.02)", border: apiKey ? "1px solid rgba(34,197,94,.15)" : "1px solid rgba(255,255,255,.05)", borderRadius: 5, color: apiKey ? C.g : "#555", cursor: "pointer", fontSize: 10, fontFamily: "inherit" }}>{apiKey ? "\u2713 API" : "\u26BF API"}</button>
+          <div style={{ display: "flex", gap: 3 }}>{Object.keys(LANG).map(l => <button key={l} onClick={() => setLang(l)} style={{ padding: "2px 8px", background: lang === l ? "rgba(0,212,255,.1)" : "transparent", border: lang === l ? "1px solid rgba(0,212,255,.2)" : "1px solid rgba(255,255,255,.03)", borderRadius: 5, color: lang === l ? C.p : "#aaa", cursor: "pointer", fontSize: 10, fontFamily: "inherit" }}>{{ en: "EN", ko: "\uD55C", zh: "\u4E2D", ja: "\u65E5" }[l]}</button>)}</div>
+          <button onClick={() => { setKeyIn(apiKey); setShowKey(true); }} style={{ padding: "3px 10px", background: apiKey ? "rgba(34,197,94,.08)" : "rgba(255,255,255,.02)", border: apiKey ? "1px solid rgba(34,197,94,.15)" : "1px solid rgba(255,255,255,.05)", borderRadius: 5, color: apiKey ? C.g : "#aaa", cursor: "pointer", fontSize: 10, fontFamily: "inherit" }}>{apiKey ? "\u2713 API" : "\u26BF API"}</button>
         </div>
         <img src="./logo.png" alt="" style={{ width: 110, height: 73, objectFit: "contain", marginBottom: 2 }} onError={e => { e.target.style.display = "none"; }} />
         <div style={{ fontSize: 26, fontWeight: 700, background: `linear-gradient(135deg,${C.p},${C.p2})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>TURNSTILE</div>
-        <div style={{ fontSize: 11, color: "#555", marginTop: 2 }}>{t.sub}</div>
-        <div style={{ fontSize: 9, color: "#444", marginTop: 4 }}>0 LLM for math \u00B7 39ms \u00B7 $0.04/query \u00B7 Apache 2.0</div>
+        <div style={{ fontSize: 11, color: "#aaa", marginTop: 2 }}>{t.sub}</div>
+        <div style={{ fontSize: 9, color: "#bbb", marginTop: 4 }}>0 LLM for math \u00B7 39ms \u00B7 $0.04/query \u00B7 Apache 2.0</div>
       </div>
 
       <div style={{ position: "relative", marginBottom: 8 }}>
         <input ref={ref} value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && run(input)} placeholder={t.ph} style={{ width: "100%", padding: "14px 60px 14px 18px", background: "rgba(255,255,255,.025)", border: "1px solid rgba(255,255,255,.06)", borderRadius: 12, color: "#e4e4e4", fontSize: 15, fontFamily: "inherit", outline: "none", transition: "border .3s" }} />
         <button onClick={() => run(input)} disabled={loading} style={{ position: "absolute", right: 5, top: 5, bottom: 5, padding: "0 20px", background: loading ? "rgba(0,212,255,.1)" : `linear-gradient(135deg,${C.p},${C.p2})`, border: "none", borderRadius: 9, color: loading ? C.p : "#000", cursor: loading ? "default" : "pointer", fontSize: 16, fontWeight: 700 }}>{loading ? "..." : "\u26A1"}</button>
       </div>
-      {!result && !loading && <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 16 }}>{EXAMPLES.map((ex, i) => <button key={i} onClick={() => { setInput(ex); run(ex); }} style={{ padding: "5px 14px", background: "rgba(255,255,255,.01)", border: "1px solid rgba(255,255,255,.04)", borderRadius: 16, color: "#555", cursor: "pointer", fontSize: 11, fontFamily: "inherit", transition: "all .2s" }} onMouseEnter={e => { e.target.style.borderColor = "rgba(0,212,255,.2)"; e.target.style.color = "#999"; }} onMouseLeave={e => { e.target.style.borderColor = "rgba(255,255,255,.04)"; e.target.style.color = "#555"; }}>{ex}</button>)}</div>}
+      {!result && !loading && <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 16 }}>{EXAMPLES.map((ex, i) => <button key={i} onClick={() => { setInput(ex); run(ex); }} style={{ padding: "5px 14px", background: "rgba(255,255,255,.01)", border: "1px solid rgba(255,255,255,.04)", borderRadius: 16, color: "#aaa", cursor: "pointer", fontSize: 11, fontFamily: "inherit", transition: "all .2s" }} onMouseEnter={e => { e.target.style.borderColor = "rgba(0,212,255,.2)"; e.target.style.color = "#ccc"; }} onMouseLeave={e => { e.target.style.borderColor = "rgba(255,255,255,.04)"; e.target.style.color = "#aaa"; }}>{ex}</button>)}</div>}
 
       {loading && <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>{PH.map((p, i) => <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 8px", borderRadius: 6, background: i === phase ? "rgba(0,212,255,.03)" : "transparent", opacity: i <= phase ? 1 : .1, animation: i <= phase ? `si .3s ${i*.04}s both` : "none" }}>
-        <div style={{ width: 14, height: 14, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, background: i < phase ? "rgba(34,197,94,.1)" : i === phase ? "rgba(0,212,255,.12)" : "transparent", color: i < phase ? C.g : i === phase ? C.p : "#333", border: i === phase ? "1px solid rgba(0,212,255,.25)" : "none" }}>{i < phase ? "\u2713" : i === phase ? "\u25D0" : "\u25CB"}</div>
-        <span style={{ fontSize: 12, color: i === phase ? "#ddd" : i < phase ? "#666" : "#333" }}>{p}</span>
+        <div style={{ width: 14, height: 14, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, background: i < phase ? "rgba(34,197,94,.1)" : i === phase ? "rgba(0,212,255,.12)" : "transparent", color: i < phase ? C.g : i === phase ? C.p : "#bbb", border: i === phase ? "1px solid rgba(0,212,255,.25)" : "none" }}>{i < phase ? "\u2713" : i === phase ? "\u25D0" : "\u25CB"}</div>
+        <span style={{ fontSize: 12, color: i === phase ? "#ddd" : i < phase ? "#aaa" : "#bbb" }}>{p}</span>
         {i === phase && <span style={{ fontSize: 9, color: C.p, marginLeft: "auto", animation: "br 1.2s infinite" }}>active</span>}
       </div>)}</div>}
 
@@ -212,10 +229,10 @@ export default function Turnstile() {
           {typed && r.direction && r.direction !== "—" && <div style={{ display: "flex", flexWrap: "wrap", gap: 8, animation: "si .5s ease" }}>
             <div style={{ padding: "4px 14px", borderRadius: 6, background: `${r.dirColor}18`, border: `1px solid ${r.dirColor}33`, fontSize: 12, fontWeight: 700, color: r.dirColor }}>{r.direction === "UP" ? "\u25B2" : "\u25BC"} {r.direction}</div>
             {r.target && <div style={{ padding: "4px 14px", borderRadius: 6, background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)", fontSize: 12, color: "#ccc" }}>{t.tgt}: {r.target}</div>}
-            {r.deadline && <div style={{ padding: "4px 14px", borderRadius: 6, background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)", fontSize: 12, color: "#999" }}>{r.deadline}</div>}
+            {r.deadline && <div style={{ padding: "4px 14px", borderRadius: 6, background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)", fontSize: 12, color: "#ccc" }}>{r.deadline}</div>}
           </div>}
           {typed && <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, animation: "si .5s ease" }}>
-            <span style={{ fontSize: 11, color: "#666" }}>{t.conf}</span>
+            <span style={{ fontSize: 11, color: "#aaa" }}>{t.conf}</span>
             <div style={{ width: 80, height: 3, background: "rgba(255,255,255,.04)", borderRadius: 2, overflow: "hidden" }}><div style={{ width: `${r.confidence}%`, height: "100%", borderRadius: 2, background: r.confidence >= 70 ? C.g : C.a, animation: "bg 1s ease", transformOrigin: "left" }} /></div>
             <span style={{ fontSize: 13, fontWeight: 700, color: r.confidence >= 70 ? C.g : C.a }}>{r.confidence}%</span>
           </div>}
@@ -226,11 +243,11 @@ export default function Turnstile() {
           {r.mechanism && <Reveal delay={200}><div style={{ padding: "12px 16px", background: "rgba(0,0,0,.15)", borderLeft: `2px solid ${C.p}44`, marginBottom: 8, borderRadius: 0 }}>
             <div style={{ fontSize: 9, color: C.p, fontWeight: 600, letterSpacing: 2, marginBottom: 4 }}>{t.mech}</div>
             <div style={{ fontSize: 13, color: "#bbb", lineHeight: 1.6 }}>{r.mechanism}</div>
-            {r.recovery && <div style={{ fontSize: 12, color: "#888", marginTop: 6, fontStyle: "italic" }}>{r.recovery}</div>}
+            {r.recovery && <div style={{ fontSize: 12, color: "#bbb", marginTop: 6, fontStyle: "italic" }}>{r.recovery}</div>}
           </div></Reveal>}
 
           <Reveal delay={350}><div style={{ display: "flex", gap: 0, borderBottom: "1px solid rgba(255,255,255,.05)", marginBottom: 10 }}>
-            {["result","math"].map(tb => <button key={tb} onClick={() => setTab(tb)} style={{ padding: "8px 20px", background: "transparent", border: "none", borderBottom: tab === tb ? `2px solid ${C.p}` : "2px solid transparent", color: tab === tb ? C.p : "#555", cursor: "pointer", fontSize: 11, fontFamily: "inherit", fontWeight: 500, letterSpacing: 1 }}>{tb === "result" ? t.an : t.wp}</button>)}
+            {["result","math"].map(tb => <button key={tb} onClick={() => setTab(tb)} style={{ padding: "8px 20px", background: "transparent", border: "none", borderBottom: tab === tb ? `2px solid ${C.p}` : "2px solid transparent", color: tab === tb ? C.p : "#aaa", cursor: "pointer", fontSize: 11, fontFamily: "inherit", fontWeight: 500, letterSpacing: 1 }}>{tb === "result" ? t.an : t.wp}</button>)}
           </div></Reveal>
 
           {tab === "result" && <>
@@ -242,7 +259,7 @@ export default function Turnstile() {
             {r.tl?.length > 0 && <Reveal delay={550}><ResponsiveContainer width="100%" height={180}>
               <AreaChart data={r.tl} margin={{ left: -20, right: 8, top: 6, bottom: 0 }}>
                 <defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={C.p} stopOpacity={.25} /><stop offset="100%" stopColor={C.p} stopOpacity={0} /></linearGradient><linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={C.g} stopOpacity={.12} /><stop offset="100%" stopColor={C.g} stopOpacity={0} /></linearGradient><linearGradient id="gc" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={C.r} stopOpacity={.12} /><stop offset="100%" stopColor={C.r} stopOpacity={0} /></linearGradient></defs>
-                <XAxis dataKey="t" tick={{ fill: "#555", fontSize: 9 }} axisLine={false} tickLine={false} /><YAxis hide domain={[0, 55]} /><Tooltip content={<CTip />} />
+                <XAxis dataKey="t" tick={{ fill: "#aaa", fontSize: 9 }} axisLine={false} tickLine={false} /><YAxis hide domain={[0, 55]} /><Tooltip content={<CTip />} />
                 <Area type="monotone" dataKey="b" stroke={C.p} fill="url(#ga)" strokeWidth={2} name={t.bs} animationDuration={1600} dot={false} />
                 <Area type="monotone" dataKey="u" stroke={C.g} fill="url(#gb)" strokeWidth={1.2} name={t.bu} animationDuration={1600} dot={false} strokeDasharray="3 2" />
                 <Area type="monotone" dataKey="d" stroke={C.r} fill="url(#gc)" strokeWidth={1.2} name={t.be} animationDuration={1600} dot={false} strokeDasharray="3 2" />
@@ -250,28 +267,28 @@ export default function Turnstile() {
             </ResponsiveContainer></Reveal>}
 
             <Reveal delay={750}><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
-              {r.sc?.length > 0 && <ResponsiveContainer width="100%" height={r.sc.length * 40}><BarChart data={r.sc} layout="vertical" margin={{ left: 0, right: 8 }} barCategoryGap="20%"><XAxis type="number" domain={[0, 55]} hide /><YAxis type="category" dataKey="n" width={95} tick={{ fill: "#777", fontSize: 10 }} axisLine={false} tickLine={false} /><Tooltip content={<CTip />} /><Bar dataKey="p" radius={[0, 5, 5, 0]} animationDuration={1200} name="%">{r.sc.map((_, i) => <Cell key={i} fill={[C.p,`${C.p}77`,`${C.p}33`,`${C.v}88`][i]} />)}</Bar></BarChart></ResponsiveContainer>}
-              {r.rd && <ResponsiveContainer width="100%" height={(r.sc?.length || 4) * 40}><RadarChart data={r.rd} margin={{ top: 8, right: 25, bottom: 8, left: 25 }}><PolarGrid stroke="rgba(255,255,255,.05)" /><PolarAngleAxis dataKey="a" tick={{ fill: "#666", fontSize: 9 }} /><PolarRadiusAxis tick={false} axisLine={false} domain={[0, 100]} /><Radar dataKey="v" stroke={C.p} fill={C.p} fillOpacity={.08} strokeWidth={1.5} animationDuration={1400} dot={{ r: 2.5, fill: C.p, strokeWidth: 0 }} /></RadarChart></ResponsiveContainer>}
+              {r.sc?.length > 0 && <ResponsiveContainer width="100%" height={r.sc.length * 40}><BarChart data={r.sc} layout="vertical" margin={{ left: 0, right: 8 }} barCategoryGap="20%"><XAxis type="number" domain={[0, 55]} hide /><YAxis type="category" dataKey="n" width={95} tick={{ fill: "#bbb", fontSize: 10 }} axisLine={false} tickLine={false} /><Tooltip content={<CTip />} /><Bar dataKey="p" radius={[0, 5, 5, 0]} animationDuration={1200} name="%">{r.sc.map((_, i) => <Cell key={i} fill={[C.p,`${C.p}77`,`${C.p}33`,`${C.v}88`][i]} />)}</Bar></BarChart></ResponsiveContainer>}
+              {r.rd && <ResponsiveContainer width="100%" height={(r.sc?.length || 4) * 40}><RadarChart data={r.rd} margin={{ top: 8, right: 25, bottom: 8, left: 25 }}><PolarGrid stroke="rgba(255,255,255,.05)" /><PolarAngleAxis dataKey="a" tick={{ fill: "#aaa", fontSize: 9 }} /><PolarRadiusAxis tick={false} axisLine={false} domain={[0, 100]} /><Radar dataKey="v" stroke={C.p} fill={C.p} fillOpacity={.08} strokeWidth={1.5} animationDuration={1400} dot={{ r: 2.5, fill: C.p, strokeWidth: 0 }} /></RadarChart></ResponsiveContainer>}
             </div></Reveal>
 
             {r.dr?.length > 0 && <Reveal delay={1000}><div style={{ marginBottom: 10 }}>{r.dr.map((d, i) => <div key={i} style={{ display: "flex", alignItems: "center", gap: 7, padding: "5px 0", animation: `si .4s ${i*.06}s both` }}>
               <span style={{ fontSize: 10, color: dc(d.d), minWidth: 12, textAlign: "center", fontWeight: 600 }}>{di(d.d)}</span>
               <div style={{ flex: 1, height: 2.5, background: "rgba(255,255,255,.03)", borderRadius: 2, overflow: "hidden" }}><div style={{ width: `${d.v}%`, height: "100%", background: `${dc(d.d)}44`, borderRadius: 2, animation: `bg .8s ${i*.06}s both`, transformOrigin: "left" }} /></div>
               <span style={{ fontSize: 11, fontWeight: 600, color: dc(d.d), minWidth: 24, textAlign: "right" }}>{d.v}</span>
-              <span style={{ fontSize: 12, color: "#999", flex: 2 }}>{d.n}</span>
+              <span style={{ fontSize: 12, color: "#ccc", flex: 2 }}>{d.n}</span>
             </div>)}</div></Reveal>}
 
             {r.wrong && <Reveal delay={1200}><div style={{ padding: "8px 12px", borderLeft: `2px solid ${C.r}33`, marginBottom: 10, background: `${C.r}04` }}>
-              <span style={{ fontSize: 9, color: C.r, fontWeight: 600 }}>{t.inv} </span><span style={{ fontSize: 11, color: "#888" }}>{r.wrong}</span>
+              <span style={{ fontSize: 9, color: C.r, fontWeight: 600 }}>{t.inv} </span><span style={{ fontSize: 11, color: "#bbb" }}>{r.wrong}</span>
             </div></Reveal>}
           </>}
 
-          {tab === "math" && <Reveal delay={100}>{r.math ? <MathViz math={r.math} /> : <div style={{ padding: 16, textAlign: "center", color: "#555", fontSize: 12 }}>Math viz available for demo scenarios.</div>}</Reveal>}
+          {tab === "math" && <Reveal delay={100}>{r.math ? <MathViz math={r.math} /> : <div style={{ padding: 16, textAlign: "center", color: "#aaa", fontSize: 12 }}>Math viz available for demo scenarios.</div>}</Reveal>}
 
           <Reveal delay={tab === "math" ? 200 : 1400}><div style={{ textAlign: "center", padding: ".5rem 0" }}>
-            <button onClick={() => { setResult(null); setInput(""); setTyped(false); ref.current?.focus(); }} style={{ padding: "6px 24px", background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.04)", borderRadius: 8, color: "#555", cursor: "pointer", fontSize: 12, fontFamily: "inherit" }} onMouseEnter={e => e.target.style.borderColor = `${C.p}22`} onMouseLeave={e => e.target.style.borderColor = "rgba(255,255,255,.04)"}>{t.nw}</button>
+            <button onClick={() => { setResult(null); setInput(""); setTyped(false); ref.current?.focus(); }} style={{ padding: "6px 24px", background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.04)", borderRadius: 8, color: "#aaa", cursor: "pointer", fontSize: 12, fontFamily: "inherit" }} onMouseEnter={e => e.target.style.borderColor = `${C.p}22`} onMouseLeave={e => e.target.style.borderColor = "rgba(255,255,255,.04)"}>{t.nw}</button>
           </div>
-          <div style={{ textAlign: "center", fontSize: 9, color: "#222", padding: "2px 0 1rem" }}>TURNSTILE v3.3 \u00B7 Apache 2.0 \u00B7 <span style={{ color: `${C.p}22` }}>ZENION IT</span></div></Reveal>
+          <div style={{ textAlign: "center", fontSize: 9, color: "#aaa", padding: "2px 0 1rem" }}>TURNSTILE v3.3 \u00B7 Apache 2.0 \u00B7 <span style={{ color: `${C.p}22` }}>ZENION IT</span></div></Reveal>
         </>}
       </div>}
     </div>
