@@ -220,7 +220,13 @@ export default function Turnstile() {
   const ref = useRef(null);
   const t = LANG[lang];
 
-  const PH = ["Parsing scenario","Building DAG","Forward propagation","Bayesian inversion","Entropy gradient","Monte Carlo \u00D7500","Turnstile lock","Verdict"];
+  const PH_ALL = {
+    en: ["Parsing scenario","Building DAG","Forward propagation","Bayesian inversion","Entropy gradient","Monte Carlo \u00D7500","Turnstile lock","Verdict"],
+    ko: ["\uc2dc\ub098\ub9ac\uc624 \ubd84\uc11d","DAG \uad6c\uc131","\uc21c\ubc29\ud5a5 \uc804\ud30c","\ubca0\uc774\uc988 \uc5ed\uc804","\uc5d4\ud2b8\ub85c\ud53c \uae30\uc6b8\uae30","\ubab0\ud14c\uce74\ub974\ub85c \u00D7500","\ud134\uc2a4\ud0c0\uc77c \ub77d","\ud310\uc815"],
+    zh: ["\u573a\u666f\u89e3\u6790","\u6784\u5efa DAG","\u524d\u5411\u4f20\u64ad","\u8d1d\u53f6\u65af\u53cd\u8f6c","\u71b5\u68af\u5ea6","\u8499\u7279\u5361\u6d1b \u00D7500","\u8f6c\u95f8\u9501\u5b9a","\u5224\u5b9a"],
+    ja: ["\u30b7\u30ca\u30ea\u30aa\u89e3\u6790","DAG\u69cb\u7bc9","\u9806\u65b9\u5411\u4f1d\u64ad","\u30d9\u30a4\u30ba\u53cd\u8ee2","\u30a8\u30f3\u30c8\u30ed\u30d4\u30fc\u52fe\u914d","\u30e2\u30f3\u30c6\u30ab\u30eb\u30ed \u00D7500","\u30bf\u30fc\u30f3\u30b9\u30bf\u30a4\u30eb\u30ed\u30c3\u30af","\u5224\u5b9a"],
+  };
+  const PH = PH_ALL[lang] || PH_ALL.en;
 
   const run = async (text) => {
     if (!text.trim()) return;
@@ -228,11 +234,11 @@ export default function Turnstile() {
     const pt = setInterval(() => setPhase(p => Math.min(p + 1, PH.length - 1)), 600);
     const m = DEMOS[text];
     if (m) { await new Promise(r => setTimeout(r, PH.length * 600 + 400)); clearInterval(pt); setPhase(PH.length); setResult(m); setLoading(false); return; }
-    if (!apiKey) { clearInterval(pt); setResult({ verdict: "API key required. Click \u26BF above. Demo scenarios work without it.", direction: "—", dirColor: "#bbb", target: "—", deadline: "—", mechanism: "—", confidence: 0 }); setLoading(false); return; }
+    if (!apiKey) { clearInterval(pt); setResult({ verdict: { en: "API key required. Click \u26BF above. Demo scenarios work without it.", ko: "API \ud0a4\uac00 \ud544\uc694\ud569\ub2c8\ub2e4. \uc704\uc758 \u26BF \ubc84\ud2bc\uc744 \ud074\ub9ad\ud558\uc138\uc694. \ub370\ubaa8 \uc2dc\ub098\ub9ac\uc624\ub294 \ud0a4 \uc5c6\uc774 \uc791\ub3d9\ud569\ub2c8\ub2e4.", zh: "\u9700\u8981 API \u5bc6\u94a5\u3002\u70b9\u51fb\u4e0a\u65b9 \u26BF\u3002\u6f14\u793a\u573a\u666f\u65e0\u9700\u5bc6\u94a5\u3002", ja: "API\u30ad\u30fc\u304c\u5fc5\u8981\u3067\u3059\u3002\u4e0a\u306e\u26BF\u3092\u30af\u30ea\u30c3\u30af\u3002\u30c7\u30e2\u306f\u30ad\u30fc\u4e0d\u8981\u3002" }[lang] || "API key required.", direction: "—", dirColor: "#bbb", target: "—", deadline: "—", mechanism: "—", confidence: 0 }); setLoading(false); return; }
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST", headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4096, tools: [{ type: "web_search_20250305", name: "web_search" }], messages: [{ role: "user", content: PROMPT + `\n\nScenario: "${text}"\n\nONLY JSON.` }] }),
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4096, tools: [{ type: "web_search_20250305", name: "web_search" }], messages: [{ role: "user", content: PROMPT + `\n\nIMPORTANT: Write ALL text values (verdict, target, mechanism, recovery, hidden, wrong, scenario names in sc, driver names in dr, radar axis names in rd) in ${{ en: "English", ko: "Korean (한국어)", zh: "Chinese (中文)", ja: "Japanese (日本語)" }[lang]}. Keep JSON keys in English.\n\nScenario: "${text}"\n\nONLY JSON.` }] }),
       });
       const data = await res.json();
       const textBlock = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "";
