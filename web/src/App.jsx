@@ -108,6 +108,57 @@ const MathViz = ({ math }) => {
   </div>;
 };
 
+const generateMath = (dr) => {
+  if (!dr || dr.length < 3) return null;
+  const n = Math.min(dr.length, 6);
+  const drivers = dr.slice(0, n);
+  const nodes = drivers.map(d => {
+    const words = d.n.replace(/[₩$%]/g, '').trim().split(/\s+/);
+    return words[0].slice(0, 7);
+  });
+  const sz = nodes.length;
+
+  const adj = Array.from({ length: sz }, () => Array(sz).fill(0));
+  drivers.forEach((d, i) => {
+    if (i < sz - 1) adj[i][sz - 1] = +(d.v / 100).toFixed(2);
+    if (i > 0 && i < sz - 1) adj[0][i] = +((d.v / 100) * 0.5 + 0.1).toFixed(2);
+    if (i > 1) adj[1][i] = +((d.v / 100) * 0.3).toFixed(2);
+  });
+
+  const marginals = Array(sz).fill(0);
+  marginals[0] = 1.0;
+  for (let j = 1; j < sz; j++) {
+    let prod = 1;
+    for (let i = 0; i < j; i++) {
+      if (adj[i][j] > 0) prod *= (1 - adj[i][j] * marginals[i]);
+    }
+    marginals[j] = +(1 - prod).toFixed(2);
+  }
+
+  const inv = Array.from({ length: sz }, () => Array(sz).fill(0));
+  for (let i = 0; i < sz; i++) {
+    for (let j = 0; j < sz; j++) {
+      if (adj[i][j] > 0 && marginals[j] > 0) {
+        inv[j][i] = +Math.min(.99, (adj[i][j] * marginals[i]) / marginals[j]).toFixed(2);
+      }
+    }
+  }
+
+  const H = (p) => (p > 0.01 && p < 0.99) ? -(p * Math.log2(p) + (1 - p) * Math.log2(1 - p)) : 0;
+  const efwd = marginals.map((m, i) => +(H(m) * Math.max(0, 1 - i / (sz - 1))).toFixed(2));
+  const einv = marginals.map((m, i) => +(H(m) * (i / (sz - 1))).toFixed(2));
+
+  let minGrad = Infinity, tidx = Math.floor(sz / 2);
+  for (let i = 1; i < sz - 1; i++) {
+    const g = Math.abs(efwd[i] - einv[i]);
+    if (g < minGrad) { minGrad = g; tidx = i; }
+  }
+
+  return { nodes, adj, marginals, inv, efwd, einv, tidx };
+};
+
+const BUILT_IN_KEY = import.meta.env.VITE_ANTHROPIC_KEY || "";
+
 const PROMPT = `You are TURNSTILE, a Bayesian causal inversion engine. Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.
 
 CRITICAL RULES:
@@ -164,7 +215,7 @@ export default function Turnstile() {
   const [typed, setTyped] = useState(false);
   const [tab, setTab] = useState("result");
   const [showKey, setShowKey] = useState(false);
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState(BUILT_IN_KEY);
   const [keyIn, setKeyIn] = useState("");
   const ref = useRef(null);
   const t = LANG[lang];
@@ -188,6 +239,7 @@ export default function Turnstile() {
       const jsonMatch = textBlock.match(/\{[\s\S]*\}/);
       const p = JSON.parse(jsonMatch ? jsonMatch[0] : "{}");
       p.dirColor = p.direction === "UP" ? C.g : C.r;
+      if (!p.math && p.dr) p.math = generateMath(p.dr);
       clearInterval(pt); setPhase(PH.length); setResult(p);
     } catch (e) { clearInterval(pt); setResult({ verdict: `Error: ${e.message}`, direction: "—", dirColor: "#bbb", confidence: 0 }); }
     setLoading(false);
@@ -214,7 +266,7 @@ export default function Turnstile() {
       <div style={{ textAlign: "center", padding: "2rem 0 .8rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
           <div style={{ display: "flex", gap: 3 }}>{Object.keys(LANG).map(l => <button key={l} onClick={() => setLang(l)} style={{ padding: "2px 8px", background: lang === l ? "rgba(0,212,255,.1)" : "transparent", border: lang === l ? "1px solid rgba(0,212,255,.2)" : "1px solid rgba(255,255,255,.03)", borderRadius: 5, color: lang === l ? C.p : "#aaa", cursor: "pointer", fontSize: 10, fontFamily: "inherit" }}>{{ en: "EN", ko: "\uD55C", zh: "\u4E2D", ja: "\u65E5" }[l]}</button>)}</div>
-          <button onClick={() => { setKeyIn(apiKey); setShowKey(true); }} style={{ padding: "3px 10px", background: apiKey ? "rgba(34,197,94,.08)" : "rgba(255,255,255,.02)", border: apiKey ? "1px solid rgba(34,197,94,.15)" : "1px solid rgba(255,255,255,.05)", borderRadius: 5, color: apiKey ? C.g : "#aaa", cursor: "pointer", fontSize: 10, fontFamily: "inherit" }}>{apiKey ? "\u2713 API" : "\u26BF API"}</button>
+          {!BUILT_IN_KEY && <button onClick={() => { setKeyIn(apiKey); setShowKey(true); }} style={{ padding: "3px 10px", background: apiKey ? "rgba(34,197,94,.08)" : "rgba(255,255,255,.02)", border: apiKey ? "1px solid rgba(34,197,94,.15)" : "1px solid rgba(255,255,255,.05)", borderRadius: 5, color: apiKey ? C.g : "#aaa", cursor: "pointer", fontSize: 10, fontFamily: "inherit" }}>{apiKey ? "\u2713 API" : "\u26BF API"}</button>}
         </div>
         <img src="./logo.png" alt="" style={{ width: 110, height: 73, objectFit: "contain", marginBottom: 2 }} onError={e => { e.target.style.display = "none"; }} />
         <div style={{ fontSize: 26, fontWeight: 700, background: `linear-gradient(135deg,${C.p},${C.p2})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>TURNSTILE</div>
@@ -297,7 +349,7 @@ export default function Turnstile() {
             </div></Reveal>}
           </>}
 
-          {tab === "math" && <Reveal delay={100}>{r.math ? <MathViz math={r.math} /> : <div style={{ padding: 16, textAlign: "center", color: "#aaa", fontSize: 12 }}>Math viz available for demo scenarios.</div>}</Reveal>}
+          {tab === "math" && <Reveal delay={100}>{r.math ? <MathViz math={r.math} /> : <div style={{ padding: 16, textAlign: "center", color: "#aaa", fontSize: 12 }}>Not enough driver data to generate math visualization.</div>}</Reveal>}
 
           <Reveal delay={tab === "math" ? 200 : 1400}><div style={{ textAlign: "center", padding: ".5rem 0" }}>
             <button onClick={() => { setResult(null); setInput(""); setTyped(false); ref.current?.focus(); }} style={{ padding: "6px 24px", background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.04)", borderRadius: 8, color: "#aaa", cursor: "pointer", fontSize: 12, fontFamily: "inherit" }} onMouseEnter={e => e.target.style.borderColor = `${C.p}22`} onMouseLeave={e => e.target.style.borderColor = "rgba(255,255,255,.04)"}>{t.nw}</button>
