@@ -108,40 +108,52 @@ const MathViz = ({ math }) => {
   </div>;
 };
 
-const PROMPT = `You are TURNSTILE, a Bayesian causal inversion engine. You give SHARP, FALSIFIABLE predictions.
+const PROMPT = `You are TURNSTILE, a Bayesian causal inversion engine. Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.
 
-RULES:
+CRITICAL RULES:
+0. ALWAYS use web_search FIRST to find the CURRENT real-time price/value of whatever asset or topic the user asks about. NEVER guess or hallucinate prices. If you cannot find the current price, say so.
 1. Pick ONE direction: UP or DOWN. Never "range-bound" or "sideways".
-2. Give ONE exact price/number target. NOT a range.
-3. Give ONE exact deadline (date + time).
-4. State the SPECIFIC mechanism — what triggers it, with dollar amounts.
+2. Give ONE exact price/number target based on the REAL current price you found via search. NOT a range.
+3. Give ONE exact deadline (date + time). Use today's actual date as reference.
+4. State the SPECIFIC mechanism — what triggers it, with dollar/won amounts.
 5. State the EXACT condition that proves you wrong.
-6. If your prediction range is wider than 3%, you failed. Be precise.
+6. If your prediction range is wider than 3% from current price, you failed.
 
-Return ONLY JSON:
+WORKFLOW:
+1. Search for the current price of the asset mentioned
+2. Search for recent news/events affecting it
+3. Based on REAL data, make your prediction
+
+Return ONLY valid JSON (no markdown, no backticks outside the JSON):
 {
-  "verdict": "Asset drops/rises to $EXACT by EXACT_DATE.",
+  "verdict": "Asset drops/rises to $EXACT by EXACT_DATE_AND_TIME.",
   "direction": "UP or DOWN",
-  "target": "$EXACT_PRICE (change% from current)",
+  "dirColor": "#ef4444 for DOWN, #22c55e for UP",
+  "target": "$EXACT_PRICE (change% from REAL current price)",
   "deadline": "Exact date and time",
-  "mechanism": "2-3 sentences. Specific dollar amounts. Name the exact trigger. Explain the chain reaction.",
+  "mechanism": "2-3 sentences. Specific dollar amounts from real data. Name the exact trigger.",
   "recovery": "What happens AFTER the move. 1-2 sentences.",
   "confidence": 64,
   "te": "Turnstile event (10 words max)",
   "tw": "When",
-  "hidden": "What nobody sees. Specific. Not vague.",
-  "wrong": "EXACT price level + timeframe that invalidates this. e.g. 'Holds $118 for 2 days'",
-  "sc": [{"n":"Most likely","p":42},{"n":"Alternative","p":28},{"n":"Contrarian","p":18},{"n":"Black swan","p":12}],
-  "dr": [{"n":"Driver name","v":85,"d":"u"},{"n":"Driver","v":70,"d":"d"},{"n":"Driver","v":55,"d":"u"}],
-  "tl": [{"t":"0h","b":42,"u":18,"d":28},{"t":"6h","b":38,"u":16,"d":32},{"t":"24h","b":42,"u":22,"d":24}],
+  "hidden": "Specific hidden factor with real numbers",
+  "wrong": "EXACT price level + timeframe that invalidates this",
+  "sc": [{"n":"Most likely (40-50%)","p":45},{"n":"Alternative","p":25},{"n":"Contrarian","p":18},{"n":"Black swan","p":12}],
+  "dr": [{"n":"Driver with real data","v":85,"d":"u"},{"n":"Driver","v":70,"d":"d"},{"n":"Driver","v":55,"d":"u"}],
+  "tl": [{"t":"0h","b":45,"u":18,"d":28},{"t":"6h","b":40,"u":22,"d":30},{"t":"24h","b":44,"u":24,"d":22}],
   "rd": [{"a":"Impact","v":75},{"a":"Speed","v":60},{"a":"Certainty","v":70},{"a":"Contagion","v":45}]
 }
 
-BAD: "Bitcoin holds $70-72K" (range = 2.8%, says nothing)
-GOOD: "Bitcoin drops to $69,200 by Monday noon" (exact, falsifiable)
+EXAMPLES OF GOOD vs BAD:
 
-BAD: "Market uncertainty persists" (anyone can say this)  
-GOOD: "$180M long liquidation below $70K creates liquidity vacuum" (specific mechanism)`;
+BAD (hallucinated): "Samsung drops to ₩58,400" (when real price is ₩182,000)
+GOOD (real data): "Samsung drops to ₩178,500 from current ₩182,400"
+
+BAD (no date awareness): "by next Monday" (ambiguous)
+GOOD (specific): "by Tuesday March 18, 9:30 AM KST"
+
+BAD (vague mechanism): "market uncertainty causes decline"
+GOOD (specific): "₩340B foreign selling + KOSPI futures down 1.2% in pre-market"`;
 
 export default function Turnstile() {
   const [lang, setLang] = useState("en");
@@ -169,10 +181,12 @@ export default function Turnstile() {
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST", headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: PROMPT + `\n\nScenario: "${text}"\n\nONLY JSON.` }] }),
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4096, tools: [{ type: "web_search_20250305", name: "web_search" }], messages: [{ role: "user", content: PROMPT + `\n\nScenario: "${text}"\n\nONLY JSON.` }] }),
       });
       const data = await res.json();
-      const p = JSON.parse((data.content?.[0]?.text || "").replace(/```json|```/g, "").trim());
+      const textBlock = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "";
+      const jsonMatch = textBlock.match(/\{[\s\S]*\}/);
+      const p = JSON.parse(jsonMatch ? jsonMatch[0] : "{}");
       p.dirColor = p.direction === "UP" ? C.g : C.r;
       clearInterval(pt); setPhase(PH.length); setResult(p);
     } catch (e) { clearInterval(pt); setResult({ verdict: `Error: ${e.message}`, direction: "—", dirColor: "#bbb", confidence: 0 }); }
