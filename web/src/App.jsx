@@ -159,6 +159,55 @@ const generateMath = (dr) => {
 
 const BUILT_IN_KEY = import.meta.env.VITE_ANTHROPIC_KEY || "";
 
+const RATE = {
+  COOLDOWN: 15000,
+  DAILY_MAX: 30,
+  SESSION_MAX: 10,
+};
+
+const rateLimiter = {
+  _sessionCount: 0,
+  _lastCall: 0,
+
+  _getDailyKey() {
+    return "ts_usage_" + new Date().toISOString().slice(0, 10);
+  },
+
+  _getDailyCount() {
+    try { return parseInt(localStorage.getItem(this._getDailyKey()) || "0", 10); }
+    catch { return 0; }
+  },
+
+  _incDaily() {
+    try {
+      const k = this._getDailyKey();
+      localStorage.setItem(k, String(this._getDailyCount() + 1));
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith("ts_usage_") && key !== k) localStorage.removeItem(key);
+      });
+    } catch {}
+  },
+
+  check(lang) {
+    const now = Date.now();
+    const wait = Math.ceil((RATE.COOLDOWN - (now - this._lastCall)) / 1000);
+    if (this._lastCall && now - this._lastCall < RATE.COOLDOWN)
+      return { ok: false, msg: { en: `Please wait ${wait}s before next prediction.`, ko: `${wait}\uCD08 \uD6C4\uC5D0 \uB2E4\uC2DC \uC2DC\uB3C4\uD574\uC8FC\uC138\uC694.`, zh: `\u8BF7${wait}\u79D2\u540E\u518D\u8BD5\u3002`, ja: `${wait}\u79D2\u5F85\u3063\u3066\u304F\u3060\u3055\u3044\u3002` }[lang] || `Wait ${wait}s.` };
+    if (this._sessionCount >= RATE.SESSION_MAX)
+      return { ok: false, msg: { en: `Session limit reached (${RATE.SESSION_MAX}). Refresh page for more.`, ko: `\uC138\uC158 \uD55C\uB3C4 \uB3C4\uB2EC (${RATE.SESSION_MAX}\uD68C). \uD398\uC774\uC9C0\uB97C \uC0C8\uB85C\uACE0\uCE68\uD574\uC8FC\uC138\uC694.`, zh: `\u4F1A\u8BDD\u9650\u5236\u5DF2\u8FBE (${RATE.SESSION_MAX})\u3002\u8BF7\u5237\u65B0\u3002`, ja: `\u30BB\u30C3\u30B7\u30E7\u30F3\u4E0A\u9650 (${RATE.SESSION_MAX})\u3002\u30EA\u30ED\u30FC\u30C9\u3057\u3066\u304F\u3060\u3055\u3044\u3002` }[lang] || `Session limit.` };
+    const daily = this._getDailyCount();
+    if (daily >= RATE.DAILY_MAX)
+      return { ok: false, msg: { en: `Daily limit reached (${RATE.DAILY_MAX}). Come back tomorrow!`, ko: `\uC77C\uC77C \uD55C\uB3C4 \uB3C4\uB2EC (${RATE.DAILY_MAX}\uD68C). \uB0B4\uC77C \uB2E4\uC2DC \uC774\uC6A9\uD574\uC8FC\uC138\uC694!`, zh: `\u4ECA\u65E5\u9650\u989D\u5DF2\u8FBE (${RATE.DAILY_MAX})\u3002\u660E\u5929\u518D\u6765\uFF01`, ja: `\u672C\u65E5\u306E\u4E0A\u9650 (${RATE.DAILY_MAX})\u3002\u660E\u65E5\u307E\u305F\uFF01` }[lang] || `Daily limit.` };
+    return { ok: true };
+  },
+
+  record() {
+    this._lastCall = Date.now();
+    this._sessionCount++;
+    this._incDaily();
+  },
+};
+
 const PROMPT = `You are TURNSTILE, a Bayesian causal inversion engine. Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.
 
 CRITICAL RULES:
@@ -235,6 +284,8 @@ export default function Turnstile() {
     const m = DEMOS[text];
     if (m) { await new Promise(r => setTimeout(r, PH.length * 600 + 400)); clearInterval(pt); setPhase(PH.length); setResult(m); setLoading(false); return; }
     if (!apiKey) { clearInterval(pt); setResult({ verdict: { en: "API key required. Click \u26BF above. Demo scenarios work without it.", ko: "API \ud0a4\uac00 \ud544\uc694\ud569\ub2c8\ub2e4. \uc704\uc758 \u26BF \ubc84\ud2bc\uc744 \ud074\ub9ad\ud558\uc138\uc694. \ub370\ubaa8 \uc2dc\ub098\ub9ac\uc624\ub294 \ud0a4 \uc5c6\uc774 \uc791\ub3d9\ud569\ub2c8\ub2e4.", zh: "\u9700\u8981 API \u5bc6\u94a5\u3002\u70b9\u51fb\u4e0a\u65b9 \u26BF\u3002\u6f14\u793a\u573a\u666f\u65e0\u9700\u5bc6\u94a5\u3002", ja: "API\u30ad\u30fc\u304c\u5fc5\u8981\u3067\u3059\u3002\u4e0a\u306e\u26BF\u3092\u30af\u30ea\u30c3\u30af\u3002\u30c7\u30e2\u306f\u30ad\u30fc\u4e0d\u8981\u3002" }[lang] || "API key required.", direction: "—", dirColor: "#bbb", target: "—", deadline: "—", mechanism: "—", confidence: 0 }); setLoading(false); return; }
+    const rl = rateLimiter.check(lang);
+    if (!rl.ok) { clearInterval(pt); setResult({ verdict: rl.msg, direction: "—", dirColor: "#bbb", target: "—", deadline: "—", mechanism: "—", confidence: 0 }); setLoading(false); return; }
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST", headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -246,6 +297,7 @@ export default function Turnstile() {
       const p = JSON.parse(jsonMatch ? jsonMatch[0] : "{}");
       p.dirColor = p.direction === "UP" ? C.g : C.r;
       if (!p.math && p.dr) p.math = generateMath(p.dr);
+      rateLimiter.record();
       clearInterval(pt); setPhase(PH.length); setResult(p);
     } catch (e) { clearInterval(pt); setResult({ verdict: `Error: ${e.message}`, direction: "—", dirColor: "#bbb", confidence: 0 }); }
     setLoading(false);
