@@ -4,10 +4,10 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip, AreaCh
 const C = { p: "#00d4ff", p2: "#0ea5e9", g: "#22c55e", r: "#ef4444", a: "#f59e0b", v: "#818cf8" };
 
 const LANG = {
-  en: { sub: "Bayesian temporal inversion engine", ph: "What do you want to predict?", conf: "Confidence", nw: "New prediction", wp: "Math", an: "Result", bs: "Base", bu: "Bull", be: "Bear", api: "API key", apiD: "Enter Anthropic API key for custom analysis. Demos work without it.", sv: "Save", cn: "Cancel", dir: "DIRECTION", tgt: "TARGET", mech: "MECHANISM", inv: "INVALIDATED IF", hid: "HIDDEN FACTOR" },
-  ko: { sub: "베이지안 시간 역전 엔진", ph: "무엇을 예측할까요?", conf: "신뢰도", nw: "새 예측", wp: "수학", an: "결과", bs: "기본", bu: "상승", be: "하락", api: "API 키", apiD: "커스텀 분석을 위한 Anthropic API 키. 데모는 키 없이 작동.", sv: "저장", cn: "취소", dir: "방향", tgt: "목표가", mech: "메커니즘", inv: "무효 조건", hid: "숨겨진 요인" },
-  zh: { sub: "贝叶斯时间反演引擎", ph: "你想预测什么?", conf: "置信度", nw: "新预测", wp: "数学", an: "结果", bs: "基准", bu: "看涨", be: "看跌", api: "API密钥", apiD: "输入Anthropic API密钥。演示无需密钥。", sv: "保存", cn: "取消", dir: "方向", tgt: "目标价", mech: "机制", inv: "失效条件", hid: "隐藏因素" },
-  ja: { sub: "ベイズ時間反転エンジン", ph: "何を予測しますか?", conf: "信頼度", nw: "新規予測", wp: "数学", an: "結果", bs: "基本", bu: "強気", be: "弱気", api: "APIキー", apiD: "Anthropic APIキーを入力。デモはキー不要。", sv: "保存", cn: "キャンセル", dir: "方向", tgt: "ターゲット", mech: "メカニズム", inv: "無効条件", hid: "隠れた要因" },
+  en: { sub: "Bayesian temporal inversion engine", ph: "What do you want to predict?", conf: "Confidence", nw: "New prediction", wp: "Math", an: "Result", bs: "Base", bu: "Bull", be: "Bear", api: "API key", apiD: "Enter Anthropic API key for custom analysis. Demos work without it.", sv: "Save", cn: "Cancel", dir: "DIRECTION", tgt: "TARGET", mech: "MECHANISM", inv: "INVALIDATED IF", hid: "HIDDEN FACTOR", src: "SOURCES (searched)" },
+  ko: { sub: "\uBCA0\uC774\uC9C0\uC548 \uC2DC\uAC04 \uC5ED\uC804 \uC5D4\uC9C4", ph: "\uBB34\uC5C7\uC744 \uC608\uCE21\uD560\uAE4C\uC694?", conf: "\uC2E0\uB8B0\uB3C4", nw: "\uC0C8 \uC608\uCE21", wp: "\uC218\uD559", an: "\uACB0\uACFC", bs: "\uAE30\uBCF8", bu: "\uC0C1\uC2B9", be: "\uD558\uB77D", api: "API \uD0A4", apiD: "\uCEE4\uC2A4\uD140 \uBD84\uC11D\uC744 \uC704\uD55C Anthropic API \uD0A4. \uB370\uBAA8\uB294 \uD0A4 \uC5C6\uC774 \uC791\uB3D9.", sv: "\uC800\uC7A5", cn: "\uCDE8\uC18C", dir: "\uBC29\uD5A5", tgt: "\uBAA9\uD45C\uAC00", mech: "\uBA54\uCEE4\uB2C8\uC998", inv: "\uBB34\uD6A8 \uC870\uAC74", hid: "\uC228\uACA8\uC9C4 \uC694\uC778", src: "\uCD9C\uCC98 (\uAC80\uC0C9 \uAE30\uBC18)" },
+  zh: { sub: "\u8D1D\u53F6\u65AF\u65F6\u95F4\u53CD\u6F14\u5F15\u64CE", ph: "\u4F60\u60F3\u9884\u6D4B\u4EC0\u4E48?", conf: "\u7F6E\u4FE1\u5EA6", nw: "\u65B0\u9884\u6D4B", wp: "\u6570\u5B66", an: "\u7ED3\u679C", bs: "\u57FA\u51C6", bu: "\u770B\u6DA8", be: "\u770B\u8DCC", api: "API\u5BC6\u94A5", apiD: "\u8F93\u5165Anthropic API\u5BC6\u94A5\u3002\u6F14\u793A\u65E0\u9700\u5BC6\u94A5\u3002", sv: "\u4FDD\u5B58", cn: "\u53D6\u6D88", dir: "\u65B9\u5411", tgt: "\u76EE\u6807\u4EF7", mech: "\u673A\u5236", inv: "\u5931\u6548\u6761\u4EF6", hid: "\u9690\u85CF\u56E0\u7D20", src: "\u6570\u636E\u6765\u6E90 (\u641C\u7D22)" },
+  ja: { sub: "\u30D9\u30A4\u30BA\u6642\u9593\u53CD\u8EE2\u30A8\u30F3\u30B8\u30F3", ph: "\u4F55\u3092\u4E88\u6E2C\u3057\u307E\u3059\u304B?", conf: "\u4FE1\u983C\u5EA6", nw: "\u65B0\u898F\u4E88\u6E2C", wp: "\u6570\u5B66", an: "\u7D50\u679C", bs: "\u57FA\u672C", bu: "\u5F37\u6C17", be: "\u5F31\u6C17", api: "API\u30AD\u30FC", apiD: "Anthropic API\u30AD\u30FC\u3092\u5165\u529B\u3002\u30C7\u30E2\u306F\u30AD\u30FC\u4E0D\u8981\u3002", sv: "\u4FDD\u5B58", cn: "\u30AD\u30E3\u30F3\u30BB\u30EB", dir: "\u65B9\u5411", tgt: "\u30BF\u30FC\u30B2\u30C3\u30C8", mech: "\u30E1\u30AB\u30CB\u30BA\u30E0", inv: "\u7121\u52B9\u6761\u4EF6", hid: "\u96A0\u308C\u305F\u8981\u56E0", src: "\u30BD\u30FC\u30B9 (\u691C\u7D22)" },
 };
 
 const DEMOS = {
@@ -157,6 +157,52 @@ const generateMath = (dr) => {
   return { nodes, adj, marginals, inv, efwd, einv, tidx };
 };
 
+const generateMathFromDAG = (dag) => {
+  if (!dag?.nodes || dag.nodes.length < 3) return null;
+  const nodeList = dag.nodes.slice(0, 6);
+  const nodes = nodeList.map(n => (n.label || n.id).split(/\s+/)[0].slice(0, 7));
+  const sz = nodes.length;
+  const nodeIds = nodeList.map(n => n.id);
+
+  const adj = Array.from({ length: sz }, () => Array(sz).fill(0));
+  (dag.edges || []).forEach(e => {
+    const si = nodeIds.indexOf(e.src);
+    const ti = nodeIds.indexOf(e.tgt);
+    if (si >= 0 && ti >= 0 && si < sz && ti < sz) adj[si][ti] = +(e.prob || 0).toFixed(2);
+  });
+
+  const marginals = Array(sz).fill(0);
+  marginals[0] = +(nodeList[0].prior || 1.0).toFixed(2);
+  for (let j = 1; j < sz; j++) {
+    let prod = 1;
+    for (let i = 0; i < j; i++) {
+      if (adj[i][j] > 0) prod *= (1 - adj[i][j] * marginals[i]);
+    }
+    marginals[j] = +(1 - prod).toFixed(2);
+  }
+
+  const inv = Array.from({ length: sz }, () => Array(sz).fill(0));
+  for (let i = 0; i < sz; i++) {
+    for (let j = 0; j < sz; j++) {
+      if (adj[i][j] > 0 && marginals[j] > 0) {
+        inv[j][i] = +Math.min(.99, (adj[i][j] * marginals[i]) / marginals[j]).toFixed(2);
+      }
+    }
+  }
+
+  const H = (p) => (p > 0.01 && p < 0.99) ? -(p * Math.log2(p) + (1 - p) * Math.log2(1 - p)) : 0;
+  const efwd = marginals.map((m, i) => +(H(m) * Math.max(0, 1 - i / (sz - 1))).toFixed(2));
+  const einv = marginals.map((m, i) => +(H(m) * (i / (sz - 1))).toFixed(2));
+
+  let minGrad = Infinity, tidx = Math.floor(sz / 2);
+  for (let i = 1; i < sz - 1; i++) {
+    const g = Math.abs(efwd[i] - einv[i]);
+    if (g < minGrad) { minGrad = g; tidx = i; }
+  }
+
+  return { nodes, adj, marginals, inv, efwd, einv, tidx };
+};
+
 const BUILT_IN_KEY = (() => {
   try {
     const t = import.meta.env.VITE_TK;
@@ -214,52 +260,76 @@ const rateLimiter = {
   },
 };
 
-const PROMPT = `You are TURNSTILE, a Bayesian causal inversion engine. Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.
+const TODAY = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-CRITICAL RULES:
-0. ALWAYS use web_search FIRST to find the CURRENT real-time price/value of whatever asset or topic the user asks about. NEVER guess or hallucinate prices. If you cannot find the current price, say so.
-1. Pick ONE direction: UP or DOWN. Never "range-bound" or "sideways".
-2. Give ONE exact price/number target based on the REAL current price you found via search. NOT a range.
-3. Give ONE exact deadline (date + time). Use today's actual date as reference.
-4. State the SPECIFIC mechanism — what triggers it, with dollar/won amounts.
-5. State the EXACT condition that proves you wrong.
-6. If your prediction range is wider than 3% from current price, you failed.
+const DAG_PROMPT = `You are TURNSTILE. Today is ${TODAY}.
 
-WORKFLOW:
-1. Search for the current price of the asset mentioned
-2. Search for recent news/events affecting it
-3. Based on REAL data, make your prediction
+STEP 1: Use web_search to find:
+  - Current price/value of the asset
+  - Recent news (last 7 days)
+  - Key financial data (earnings, volume, institutional flows)
 
-Return ONLY valid JSON (no markdown, no backticks outside the JSON):
+STEP 2: Based on SEARCHED data only, construct a causal DAG.
+Return ONLY JSON (no markdown, no backticks):
 {
-  "verdict": "Asset drops/rises to $EXACT by EXACT_DATE_AND_TIME.",
-  "direction": "UP or DOWN",
-  "dirColor": "#ef4444 for DOWN, #22c55e for UP",
-  "target": "$EXACT_PRICE (change% from REAL current price)",
-  "deadline": "Exact date and time",
-  "mechanism": "2-3 sentences. Specific dollar amounts from real data. Name the exact trigger.",
-  "recovery": "What happens AFTER the move. 1-2 sentences.",
-  "confidence": 64,
-  "te": "Turnstile event (10 words max)",
-  "tw": "When",
-  "hidden": "Specific hidden factor with real numbers",
-  "wrong": "EXACT price level + timeframe that invalidates this",
-  "sc": [{"n":"Most likely (40-50%)","p":45},{"n":"Alternative","p":25},{"n":"Contrarian","p":18},{"n":"Black swan","p":12}],
-  "dr": [{"n":"Driver with real data","v":85,"d":"u"},{"n":"Driver","v":70,"d":"d"},{"n":"Driver","v":55,"d":"u"}],
-  "tl": [{"t":"0h","b":45,"u":18,"d":28},{"t":"6h","b":40,"u":22,"d":30},{"t":"24h","b":44,"u":24,"d":22}],
-  "rd": [{"a":"Impact","v":75},{"a":"Speed","v":60},{"a":"Certainty","v":70},{"a":"Contagion","v":45}]
+  "current_price": "real price from search",
+  "current_date": "${TODAY}",
+  "searched_facts": ["fact 1 from search", "fact 2", "fact 3"],
+  "nodes": [
+    {"id": "seed", "label": "Current state description", "type": "seed", "prior": 1.0, "time": 0},
+    {"id": "factor1", "label": "Real factor from search", "type": "event", "prior": 0.7, "time": 6},
+    {"id": "factor2", "label": "Another real factor", "type": "event", "prior": 0.5, "time": 12},
+    {"id": "outcome1", "label": "Most likely outcome", "type": "outcome", "prior": 0.4, "time": 24}
+  ],
+  "edges": [
+    {"src": "seed", "tgt": "factor1", "prob": 0.8, "delay": 6},
+    {"src": "seed", "tgt": "factor2", "prob": 0.5, "delay": 12},
+    {"src": "factor1", "tgt": "outcome1", "prob": 0.6, "delay": 18},
+    {"src": "factor2", "tgt": "outcome1", "prob": 0.4, "delay": 12}
+  ],
+  "correlations": []
 }
 
-EXAMPLES OF GOOD vs BAD:
+RULES:
+- Minimum 4 nodes, maximum 6 nodes
+- Every node label must reference real data from your search
+- Every prior probability must be justified by searched evidence
+- Do NOT invent institutional flows, crash events, or block orders without search evidence
+- If you didn't search it, don't include it
+- Include at least 3 searched_facts with real numbers`;
 
-BAD (hallucinated): "Samsung drops to ₩58,400" (when real price is ₩182,000)
-GOOD (real data): "Samsung drops to ₩178,500 from current ₩182,400"
+const VERDICT_PROMPT = `You are TURNSTILE. Today is ${TODAY}.
 
-BAD (no date awareness): "by next Monday" (ambiguous)
-GOOD (specific): "by Tuesday March 18, 9:30 AM KST"
+Based on the DAG structure and real search data provided, write a sharp, falsifiable prediction.
 
-BAD (vague mechanism): "market uncertainty causes decline"
-GOOD (specific): "₩340B foreign selling + KOSPI futures down 1.2% in pre-market"`;
+HONEST confidence scoring:
+  70%+: Strong momentum + catalyst + volume all aligned (rare)
+  50-69%: Good evidence but uncertainty exists
+  30-49%: Mixed signals, acknowledge uncertainty
+  <30%: Insufficient data — say so honestly
+
+Return ONLY valid JSON (no markdown, no backticks):
+{
+  "verdict": "ONE sentence. Specific price from search data + reason.",
+  "direction": "UP or DOWN",
+  "dirColor": "#22c55e for UP, #ef4444 for DOWN",
+  "target": "target price (% change from real current price)",
+  "deadline": "specific date and time",
+  "mechanism": "2-3 sentences using ONLY searched facts. Real numbers only.",
+  "recovery": "1-2 sentences about what happens after.",
+  "confidence": 55,
+  "te": "turnstile event (10 words max)",
+  "tw": "when this event occurs",
+  "hidden": "real hidden factor from search data",
+  "wrong": "specific invalidation condition with real price levels",
+  "sc": [{"n":"most likely scenario","p":40},{"n":"alternative","p":25},{"n":"contrarian","p":20},{"n":"black swan","p":15}],
+  "dr": [{"n":"real driver from data","v":80,"d":"u"},{"n":"another driver","v":60,"d":"d"},{"n":"driver","v":50,"d":"u"}],
+  "tl": [{"t":"0h","b":40,"u":25,"d":20},{"t":"12h","b":42,"u":27,"d":18},{"t":"24h","b":45,"u":28,"d":16}],
+  "rd": [{"a":"Impact","v":70},{"a":"Speed","v":55},{"a":"Certainty","v":60},{"a":"Contagion","v":40}],
+  "sources": "Key searched facts that support this prediction"
+}
+
+DO NOT fabricate data. Every number must come from the DAG/search data provided.`;
 
 export default function Turnstile() {
   const [lang, setLang] = useState("en");
@@ -275,37 +345,54 @@ export default function Turnstile() {
   const ref = useRef(null);
   const t = LANG[lang];
 
+  const LANG_NAME = { en: "English", ko: "Korean (\uD55C\uAD6D\uC5B4)", zh: "Chinese (\u4E2D\u6587)", ja: "Japanese (\u65E5\u672C\u8A9E)" };
   const PH_ALL = {
-    en: ["Parsing scenario","Building DAG","Forward propagation","Bayesian inversion","Entropy gradient","Monte Carlo \u00D7500","Turnstile lock","Verdict"],
-    ko: ["\uc2dc\ub098\ub9ac\uc624 \ubd84\uc11d","DAG \uad6c\uc131","\uc21c\ubc29\ud5a5 \uc804\ud30c","\ubca0\uc774\uc988 \uc5ed\uc804","\uc5d4\ud2b8\ub85c\ud53c \uae30\uc6b8\uae30","\ubab0\ud14c\uce74\ub974\ub85c \u00D7500","\ud134\uc2a4\ud0c0\uc77c \ub77d","\ud310\uc815"],
-    zh: ["\u573a\u666f\u89e3\u6790","\u6784\u5efa DAG","\u524d\u5411\u4f20\u64ad","\u8d1d\u53f6\u65af\u53cd\u8f6c","\u71b5\u68af\u5ea6","\u8499\u7279\u5361\u6d1b \u00D7500","\u8f6c\u95f8\u9501\u5b9a","\u5224\u5b9a"],
-    ja: ["\u30b7\u30ca\u30ea\u30aa\u89e3\u6790","DAG\u69cb\u7bc9","\u9806\u65b9\u5411\u4f1d\u64ad","\u30d9\u30a4\u30ba\u53cd\u8ee2","\u30a8\u30f3\u30c8\u30ed\u30d4\u30fc\u52fe\u914d","\u30e2\u30f3\u30c6\u30ab\u30eb\u30ed \u00D7500","\u30bf\u30fc\u30f3\u30b9\u30bf\u30a4\u30eb\u30ed\u30c3\u30af","\u5224\u5b9a"],
+    en: ["Searching real-time data","Building causal DAG","Forward propagation","Bayesian inversion","Entropy gradient","Monte Carlo \u00D7500","Writing verdict","Turnstile lock"],
+    ko: ["\uC2E4\uC2DC\uAC04 \uB370\uC774\uD130 \uAC80\uC0C9","\uC778\uACFC DAG \uAD6C\uC131","\uC21C\uBC29\uD5A5 \uC804\uD30C","\uBCA0\uC774\uC988 \uC5ED\uC804","\uC5D4\uD2B8\uB85C\uD53C \uAE30\uC6B8\uAE30","\uBAAC\uD14C\uCE74\uB974\uB85C \u00D7500","\uD310\uC815 \uC791\uC131","\uD134\uC2A4\uD0C0\uC77C \uB77D"],
+    zh: ["\u641C\u7D22\u5B9E\u65F6\u6570\u636E","\u6784\u5EFA\u56E0\u679C DAG","\u524D\u5411\u4F20\u64AD","\u8D1D\u53F6\u65AF\u53CD\u8F6C","\u71B5\u68AF\u5EA6","\u8499\u7279\u5361\u6D1B \u00D7500","\u64B0\u5199\u5224\u5B9A","\u8F6C\u95F8\u9501\u5B9A"],
+    ja: ["\u30EA\u30A2\u30EB\u30BF\u30A4\u30E0\u30C7\u30FC\u30BF\u691C\u7D22","DAG\u69CB\u7BC9","\u9806\u65B9\u5411\u4F1D\u64AD","\u30D9\u30A4\u30BA\u53CD\u8EE2","\u30A8\u30F3\u30C8\u30ED\u30D4\u30FC\u52FE\u914D","\u30E2\u30F3\u30C6\u30AB\u30EB\u30ED \u00D7500","\u5224\u5B9A\u4F5C\u6210","\u30BF\u30FC\u30F3\u30B9\u30BF\u30A4\u30EB\u30ED\u30C3\u30AF"],
   };
   const PH = PH_ALL[lang] || PH_ALL.en;
+
+  const apiHeaders = { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" };
+  const extractJSON = (data) => {
+    const txt = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "";
+    const m = txt.match(/\{[\s\S]*\}/);
+    return m ? JSON.parse(m[0]) : null;
+  };
 
   const run = async (text) => {
     if (!text.trim()) return;
     setLoading(true); setResult(null); setTyped(false); setPhase(0); setTab("result");
-    const pt = setInterval(() => setPhase(p => Math.min(p + 1, PH.length - 1)), 600);
+    const pt = setInterval(() => setPhase(p => Math.min(p + 1, PH.length - 1)), 1200);
     const m = DEMOS[text];
     if (m) { await new Promise(r => setTimeout(r, PH.length * 600 + 400)); clearInterval(pt); setPhase(PH.length); setResult(m); setLoading(false); return; }
-    if (!apiKey) { clearInterval(pt); setResult({ verdict: { en: "API key required. Click \u26BF above. Demo scenarios work without it.", ko: "API \ud0a4\uac00 \ud544\uc694\ud569\ub2c8\ub2e4. \uc704\uc758 \u26BF \ubc84\ud2bc\uc744 \ud074\ub9ad\ud558\uc138\uc694. \ub370\ubaa8 \uc2dc\ub098\ub9ac\uc624\ub294 \ud0a4 \uc5c6\uc774 \uc791\ub3d9\ud569\ub2c8\ub2e4.", zh: "\u9700\u8981 API \u5bc6\u94a5\u3002\u70b9\u51fb\u4e0a\u65b9 \u26BF\u3002\u6f14\u793a\u573a\u666f\u65e0\u9700\u5bc6\u94a5\u3002", ja: "API\u30ad\u30fc\u304c\u5fc5\u8981\u3067\u3059\u3002\u4e0a\u306e\u26BF\u3092\u30af\u30ea\u30c3\u30af\u3002\u30c7\u30e2\u306f\u30ad\u30fc\u4e0d\u8981\u3002" }[lang] || "API key required.", direction: "—", dirColor: "#bbb", target: "—", deadline: "—", mechanism: "—", confidence: 0 }); setLoading(false); return; }
+    if (!apiKey) { clearInterval(pt); setResult({ verdict: { en: "API key required. Click \u26BF above. Demo scenarios work without it.", ko: "API \uD0A4\uAC00 \uD544\uC694\uD569\uB2C8\uB2E4. \uC704\uC758 \u26BF \uBC84\uD2BC\uC744 \uD074\uB9AD\uD558\uC138\uC694. \uB370\uBAA8 \uC2DC\uB098\uB9AC\uC624\uB294 \uD0A4 \uC5C6\uC774 \uC791\uB3D9\uD569\uB2C8\uB2E4.", zh: "\u9700\u8981 API \u5BC6\u94A5\u3002\u70B9\u51FB\u4E0A\u65B9 \u26BF\u3002\u6F14\u793A\u573A\u666F\u65E0\u9700\u5BC6\u94A5\u3002", ja: "API\u30AD\u30FC\u304C\u5FC5\u8981\u3067\u3059\u3002\u4E0A\u306E\u26BF\u3092\u30AF\u30EA\u30C3\u30AF\u3002\u30C7\u30E2\u306F\u30AD\u30FC\u4E0D\u8981\u3002" }[lang] || "API key required.", direction: "\u2014", dirColor: "#bbb", target: "\u2014", deadline: "\u2014", mechanism: "\u2014", confidence: 0 }); setLoading(false); return; }
     const rl = rateLimiter.check(lang);
-    if (!rl.ok) { clearInterval(pt); setResult({ verdict: rl.msg, direction: "—", dirColor: "#bbb", target: "—", deadline: "—", mechanism: "—", confidence: 0 }); setLoading(false); return; }
+    if (!rl.ok) { clearInterval(pt); setResult({ verdict: rl.msg, direction: "\u2014", dirColor: "#bbb", target: "\u2014", deadline: "\u2014", mechanism: "\u2014", confidence: 0 }); setLoading(false); return; }
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST", headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4096, tools: [{ type: "web_search_20250305", name: "web_search" }], messages: [{ role: "user", content: PROMPT + `\n\nIMPORTANT: Write ALL text values (verdict, target, mechanism, recovery, hidden, wrong, scenario names in sc, driver names in dr, radar axis names in rd) in ${{ en: "English", ko: "Korean (한국어)", zh: "Chinese (中文)", ja: "Japanese (日本語)" }[lang]}. Keep JSON keys in English.\n\nScenario: "${text}"\n\nONLY JSON.` }] }),
+      const dagRes = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST", headers: apiHeaders,
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4096, tools: [{ type: "web_search_20250305", name: "web_search" }], messages: [{ role: "user", content: DAG_PROMPT + `\n\nScenario: "${text}"\n\nReturn ONLY JSON.` }] }),
       });
-      const data = await res.json();
-      const textBlock = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "";
-      const jsonMatch = textBlock.match(/\{[\s\S]*\}/);
-      const p = JSON.parse(jsonMatch ? jsonMatch[0] : "{}");
-      p.dirColor = p.direction === "UP" ? C.g : C.r;
-      if (!p.math && p.dr) p.math = generateMath(p.dr);
+      const dag = extractJSON(await dagRes.json());
+      if (!dag || !dag.nodes) throw new Error("Failed to build DAG from search data");
+
+      const math = generateMathFromDAG(dag);
+
+      const verdictRes = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST", headers: apiHeaders,
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 2048, messages: [{ role: "user", content: VERDICT_PROMPT + `\n\nIMPORTANT: Write ALL text values in ${LANG_NAME[lang] || "English"}. Keep JSON keys in English.\n\nDAG and search data:\n${JSON.stringify(dag)}\n\nReturn ONLY JSON.` }] }),
+      });
+      const p = extractJSON(await verdictRes.json());
+      if (!p) throw new Error("Failed to generate verdict");
+
+      if (!p.dirColor) p.dirColor = p.direction === "UP" ? C.g : p.direction === "DOWN" ? C.r : C.a;
+      p.math = math || (p.dr ? generateMath(p.dr) : null);
+      if (dag.sources || dag.searched_facts) p.sources = dag.searched_facts || dag.sources;
       rateLimiter.record();
       clearInterval(pt); setPhase(PH.length); setResult(p);
-    } catch (e) { clearInterval(pt); setResult({ verdict: `Error: ${e.message}`, direction: "—", dirColor: "#bbb", confidence: 0 }); }
+    } catch (e) { clearInterval(pt); setResult({ verdict: `Error: ${e.message}`, direction: "\u2014", dirColor: "#bbb", confidence: 0 }); }
     setLoading(false);
   };
 
@@ -410,6 +497,11 @@ export default function Turnstile() {
 
             {r.wrong && <Reveal delay={1200}><div style={{ padding: "8px 12px", borderLeft: `2px solid ${C.r}33`, marginBottom: 10, background: `${C.r}04` }}>
               <span style={{ fontSize: 9, color: C.r, fontWeight: 600 }}>{t.inv} </span><span style={{ fontSize: 11, color: "#bbb" }}>{r.wrong}</span>
+            </div></Reveal>}
+
+            {r.sources && <Reveal delay={1400}><div style={{ padding: "8px 12px", borderLeft: `2px solid ${C.v}33`, marginBottom: 10, background: `${C.v}04` }}>
+              <div style={{ fontSize: 9, color: C.v, fontWeight: 600, letterSpacing: 1.5, marginBottom: 4 }}>{t.src}</div>
+              {Array.isArray(r.sources) ? r.sources.map((s, i) => <div key={i} style={{ fontSize: 11, color: "#bbb", lineHeight: 1.5 }}>{"\u2022"} {s}</div>) : <div style={{ fontSize: 11, color: "#bbb", lineHeight: 1.5 }}>{r.sources}</div>}
             </div></Reveal>}
           </>}
 
