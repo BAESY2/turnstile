@@ -428,6 +428,23 @@ RULES FOR HYPOTHETICAL SCENARIOS:
    It's showing the CAUSAL CHAIN: why this outcome MUST follow from these conditions.
    Even if the prediction is wrong, the causal analysis has value.
 
+━━━ INVALIDATION RULE ━━━
+The "wrong" field must contain a SPECIFIC price + time condition. No exceptions.
+NEVER write "unclear" "unidentified" "uncertain" "not clear" "불분명" "식별되지 않음" "명확하지 않다"
+These are not answers — they are dereliction of duty.
+
+ALWAYS write like this:
+  GOOD: "₩190,000 돌파 후 1시간 유지시 하락 시나리오 무효"
+  GOOD: "$72,800 holds for 2 consecutive days"
+  GOOD: "BTC breaks $74,000 and holds above for 4 hours"
+  GOOD: "NVDA closes above $185 on any single trading day this week"
+
+  BAD: "시장 상황이 불분명하여 판단 어려움"
+  BAD: "No clear invalidation identified"
+  BAD: "Multiple factors make it uncertain"
+
+Format: "[PRICE LEVEL] + [TIME CONDITION] → [WHAT BREAKS]"
+
 ENSEMBLE INTERPRETATION:
 You receive results from 3 DAGs (BULL/BASE/BEAR).
 - If all 3 agree on direction → high confidence (65-75%)
