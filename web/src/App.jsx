@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Cell, Tooltip, AreaChart, Area, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from "recharts";
+import { initEngine, runFullAnalysis } from './engine.js';
 
 const C = { p: "#00d4ff", p2: "#0ea5e9", g: "#22c55e", r: "#ef4444", a: "#f59e0b", v: "#818cf8" };
 
@@ -264,100 +265,159 @@ const TODAY = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'n
 
 const DAG_PROMPT = `You are TURNSTILE. Today is ${TODAY}.
 
-CRITICAL DATE RULES:
-- "\uC624\uB298" = ${TODAY}. NOT the next day.
-- "\uB0B4\uC77C" = the day AFTER ${TODAY}.
-- When user says "\uC624\uB298 11\uC2DC" \u2192 deadline is "${TODAY} at 11:00 AM KST"
-- When user says "\uB0B4\uC77C 9\uC2DC" \u2192 deadline is the next day at 9:00 AM KST
-- NEVER shift the user's date. If they say "\uC624\uB298", it means TODAY (${TODAY}).
-- Re-read the user's input and extract the exact date before setting any deadline.
+━━━ CRITICAL DATE RULES ━━━
+- "오늘" / "today" = ${TODAY}. NOT the next day.
+- "내일" / "tomorrow" = the day AFTER ${TODAY}.
+- "이번주" = this week starting ${TODAY}.
+- When user says "오늘 11시" → deadline is "${TODAY} at 11:00 AM KST"
+- When user says "내일 9시" → deadline is the next day at 9:00 AM KST
+- NEVER shift the user's date. Re-read the user's input and extract the exact date.
 
-RULE #1: SEARCH BEFORE ANYTHING
-You MUST use web_search to find:
-- Current real price of the asset
-- Recent news (last 7 days)
-- Key financial data
+━━━ SEARCH PHASE (3번 검색) ━━━
 
-RULE #2: NO NUMBER WITHOUT SEARCH
-For every number in your output, it must come from a search result.
-- \u2705 "Q4 revenue 93.81T won" \u2192 found via search
-- \u274C "\u20A9450B pension fund block sell" \u2192 you made this up. DELETE IT.
-- \u274C "KOSPI crashed 18%" \u2192 did you search this? No. DELETE IT.
-- \u274C "Foreign investors dump \u20A9300B" \u2192 not from search. DELETE IT.
+Search 1: Current price + basic info
+  → "[asset name] stock price today" or "[asset] price"
 
-RULE #3: SELF-CHECK
-Before returning JSON, go through every number and ask:
-"Which search result contains this exact number?"
-If the answer is "none" \u2192 REMOVE that number from your response.
+Search 2: Technical indicators + flows
+  → "[asset] RSI technical analysis"
+  → "[asset] foreign investor buying selling"
+  → "[asset] trading volume today"
 
-RULE #4: IF YOU DON'T KNOW, SAY SO
-- No search result for price \u2192 "current_price": "unavailable"
-- Mixed signals \u2192 priors should be 0.4-0.5, not 0.8
-- Uncertain \u2192 confidence must be low (30-50%), not 70%
+Search 3: Catalysts + risks
+  → "[asset] news this week"
+  → "[asset] earnings outlook 2026"
+  → relevant macro: "KOSPI today", "US futures", "USD KRW"
 
+━━━ ANTI-HALLUCINATION ━━━
+Every number → must be from search. No exceptions.
+If not found → exclude it. Don't guess.
+
+━━━ BUILD 3 COMPETING DAGS ━━━
+
+You must return 3 DAGs, not 1:
+
+DAG 1 (BULL): Best-case interpretation of searched data
+  - Weight positive catalysts higher
+  - prior 0.6-0.8 for bullish factors
+
+DAG 2 (BASE): Balanced interpretation
+  - Equal weight to bull and bear factors
+  - prior 0.4-0.6 for most factors
+
+DAG 3 (BEAR): Worst-case interpretation of searched data
+  - Weight risks and negatives higher
+  - prior 0.6-0.8 for bearish factors
+
+━━━ PRIOR CALIBRATION FROM TECHNICALS ━━━
+Use searched technical indicators to set priors:
+  RSI > 70 (overbought) → bearish prior += 0.1
+  RSI < 30 (oversold) → bullish prior += 0.1
+  Price above 20-day MA → bullish prior += 0.05
+  Price below 20-day MA → bearish prior += 0.05
+  Foreign buying 3+ days → bullish prior += 0.1
+  Foreign selling 3+ days → bearish prior += 0.1
+  Volume > 1.5x average → signal strength += 0.1
+
+━━━ OUTPUT FORMAT ━━━
 Return ONLY JSON (no markdown, no backticks):
 {
   "current_price": "real price from search",
-  "current_date": "${TODAY}",
-  "searched_facts": ["fact 1 from search", "fact 2", "fact 3"],
-  "nodes": [
-    {"id": "seed", "label": "Current state description", "type": "seed", "prior": 1.0, "time": 0},
-    {"id": "factor1", "label": "Real factor from search", "type": "event", "prior": 0.7, "time": 6},
-    {"id": "factor2", "label": "Another real factor", "type": "event", "prior": 0.5, "time": 12},
-    {"id": "outcome1", "label": "Most likely outcome", "type": "outcome", "prior": 0.4, "time": 24}
+  "search_date": "${TODAY}",
+  "searched_facts": [
+    "Fact with source",
+    "Technical: RSI = XX (from search)",
+    "Foreign: net buying/selling XX billion (from search)",
+    "Volume: XX shares vs avg XX (from search)"
   ],
-  "edges": [
-    {"src": "seed", "tgt": "factor1", "prob": 0.8, "delay": 6},
-    {"src": "seed", "tgt": "factor2", "prob": 0.5, "delay": 12},
-    {"src": "factor1", "tgt": "outcome1", "prob": 0.6, "delay": 18},
-    {"src": "factor2", "tgt": "outcome1", "prob": 0.4, "delay": 12}
+  "technicals": {
+    "rsi": null,
+    "above_ma20": null,
+    "foreign_flow": null,
+    "volume_ratio": null
+  },
+  "dags": [
+    {
+      "name": "BULL",
+      "nodes": [
+        {"id": "seed", "label": "Current: [PRICE]", "type": "seed", "prior": 1.0, "time": 0},
+        {"id": "f1", "label": "[bullish factor from search]", "type": "event", "prior": 0.75, "time": 4},
+        {"id": "o_up", "label": "Rises to [target]", "type": "outcome", "prior": 0.35, "time": 24},
+        {"id": "o_down", "label": "Drops to [target]", "type": "outcome", "prior": 0.15, "time": 24}
+      ],
+      "edges": [
+        {"src": "seed", "tgt": "f1", "prob": 0.8, "delay": 4},
+        {"src": "f1", "tgt": "o_up", "prob": 0.7, "delay": 20}
+      ]
+    },
+    {
+      "name": "BASE",
+      "nodes": [],
+      "edges": []
+    },
+    {
+      "name": "BEAR",
+      "nodes": [],
+      "edges": []
+    }
   ],
   "correlations": []
 }
 
-Every label must reference real searched data. Minimum 4 nodes, maximum 6.
-Include at least 3 searched_facts with real numbers from your search.`;
+Each DAG should have 6-10 nodes and 10-15 edges.
+The 3 DAGs use the SAME searched facts but different prior weights.`;
 
-const VERDICT_PROMPT = `ANTI-HALLUCINATION: Every number in your response must come from either:
-(a) the searched_facts in the DAG, or (b) the engine math results.
-If a number came from neither \u2192 DELETE IT. Do not invent institutional flows, block orders, or crash events.
+const VERDICT_PROMPT = `You are TURNSTILE verdict writer. Today is ${TODAY}.
 
-You are TURNSTILE. Today is ${TODAY}.
+DATE RULES:
+- "오늘" = ${TODAY}. "내일" = the day AFTER ${TODAY}.
+- NEVER shift the user's date. "오늘 11시" = ${TODAY} 11:00 AM KST.
 
-CRITICAL DATE RULES:
-- "\uC624\uB298" = ${TODAY}. NOT the next day.
-- "\uB0B4\uC77C" = the day AFTER ${TODAY}.
-- When user says "\uC624\uB298 11\uC2DC" \u2192 deadline is "${TODAY} at 11:00 AM KST"
-- NEVER shift the user's date. If they say "\uC624\uB298", it means TODAY.
+ANTI-HALLUCINATION:
+- Every number must come from searched_facts or engine results.
+- No invented flows, block orders, or crash events.
 
-Based on the DAG structure and real search data provided, write a sharp, falsifiable prediction.
+ENSEMBLE INTERPRETATION:
+You receive results from 3 DAGs (BULL/BASE/BEAR).
+- If all 3 agree on direction → high confidence (65-75%)
+- If 2/3 agree → moderate confidence (50-65%)
+- If split → low confidence (35-50%), say "MIXED"
+- Use the AVERAGE confidence from ensemble, don't inflate it
+- Mention which DAGs agree and which don't
+
+TECHNICAL INDICATOR INTEGRATION:
+- If RSI > 70 + all DAGs say UP → warn about overbought risk
+- If RSI < 30 + all DAGs say DOWN → note oversold bounce possibility
+- Foreign flow direction should reinforce or counter the prediction
+
+Write verdict in the SAME LANGUAGE as user input.
+
+Return ONLY JSON (no markdown, no backticks):
+{
+  "verdict": "ONE sentence. Direction + target + reason. Use real data only.",
+  "direction": "UP or DOWN or MIXED",
+  "dirColor": "#22c55e/#ef4444/#f59e0b",
+  "target": "specific price (% from current)",
+  "deadline": "exact date+time matching user's request",
+  "mechanism": "2-3 sentences from searched facts + engine necessity/do-calculus. No invented data.",
+  "recovery": "1-2 sentences",
+  "confidence": 55,
+  "te": "turnstile point from engine",
+  "tw": "when",
+  "hidden": "top surprise from engine — what's over/underrated",
+  "wrong": "from engine tipping_points — what flips outcome",
+  "sc": [{"n":"scenario","p":40},{"n":"alt","p":25},{"n":"bear","p":20},{"n":"swan","p":15}],
+  "dr": [{"n":"real driver from do_calculus","v":80,"d":"u"},{"n":"driver","v":60,"d":"d"}],
+  "tl": [{"t":"0h","b":40,"u":25,"d":20},{"t":"6h","b":42,"u":27,"d":18}],
+  "rd": [{"a":"Impact","v":70},{"a":"Speed","v":55},{"a":"Certainty","v":60},{"a":"Contagion","v":40}],
+  "sources": "key searched facts supporting verdict",
+  "ensemble_note": "Bull/Base/Bear DAG agreement summary"
+}
 
 HONEST confidence scoring:
-  70%+: Strong momentum + catalyst + volume all aligned (rare)
-  50-69%: Good evidence but uncertainty exists
-  30-49%: Mixed signals, acknowledge uncertainty
-  <30%: Insufficient data — say so honestly
-
-Return ONLY valid JSON (no markdown, no backticks):
-{
-  "verdict": "ONE sentence. Specific price from search data + reason.",
-  "direction": "UP or DOWN",
-  "dirColor": "#22c55e for UP, #ef4444 for DOWN",
-  "target": "target price (% change from real current price)",
-  "deadline": "specific date and time",
-  "mechanism": "2-3 sentences using ONLY searched facts. Real numbers only.",
-  "recovery": "1-2 sentences about what happens after.",
-  "confidence": 55,
-  "te": "turnstile event (10 words max)",
-  "tw": "when this event occurs",
-  "hidden": "real hidden factor from search data",
-  "wrong": "specific invalidation condition with real price levels",
-  "sc": [{"n":"most likely scenario","p":40},{"n":"alternative","p":25},{"n":"contrarian","p":20},{"n":"black swan","p":15}],
-  "dr": [{"n":"real driver from data","v":80,"d":"u"},{"n":"another driver","v":60,"d":"d"},{"n":"driver","v":50,"d":"u"}],
-  "tl": [{"t":"0h","b":40,"u":25,"d":20},{"t":"12h","b":42,"u":27,"d":18},{"t":"24h","b":45,"u":28,"d":16}],
-  "rd": [{"a":"Impact","v":70},{"a":"Speed","v":55},{"a":"Certainty","v":60},{"a":"Contagion","v":40}],
-  "sources": "Key searched facts that support this prediction"
-}
+  70%+: All 3 DAGs agree + strong momentum + catalyst (rare)
+  50-69%: 2/3 DAGs agree, good evidence
+  30-49%: Mixed signals across DAGs
+  <30%: Insufficient data — say so
 
 DO NOT fabricate data. Every number must come from the DAG/search data provided.`;
 
@@ -372,8 +432,16 @@ export default function Turnstile() {
   const [showKey, setShowKey] = useState(false);
   const [apiKey, setApiKey] = useState(BUILT_IN_KEY);
   const [keyIn, setKeyIn] = useState("");
+  const [engineReady, setEngineReady] = useState(false);
+  const [engineStatus, setEngineStatus] = useState("");
   const ref = useRef(null);
   const t = LANG[lang];
+
+  useEffect(() => {
+    initEngine((msg) => setEngineStatus(msg))
+      .then(() => setEngineReady(true))
+      .catch(() => setEngineStatus("Engine failed — using JS fallback"));
+  }, []);
 
   const LANG_NAME = { en: "English", ko: "Korean (\uD55C\uAD6D\uC5B4)", zh: "Chinese (\u4E2D\u6587)", ja: "Japanese (\u65E5\u672C\u8A9E)" };
   const PH_ALL = {
@@ -401,25 +469,73 @@ export default function Turnstile() {
     const rl = rateLimiter.check(lang);
     if (!rl.ok) { clearInterval(pt); setResult({ verdict: rl.msg, direction: "\u2014", dirColor: "#bbb", target: "\u2014", deadline: "\u2014", mechanism: "\u2014", confidence: 0 }); setLoading(false); return; }
     try {
+      // ━━━ STEP 1: Claude + web_search → 3-DAG 앙상블 구조 생성 ━━━
+      setPhase(0);
       const dagRes = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST", headers: apiHeaders,
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 4096, tools: [{ type: "web_search_20250305", name: "web_search" }], messages: [{ role: "user", content: DAG_PROMPT + `\n\nScenario: "${text}"\n\nReturn ONLY JSON.` }] }),
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 6000, tools: [{ type: "web_search_20250305", name: "web_search" }], messages: [{ role: "user", content: DAG_PROMPT + `\n\nScenario: "${text}"\n\nReturn ONLY JSON.` }] }),
       });
       const dag = extractJSON(await dagRes.json());
-      if (!dag || !dag.nodes) throw new Error("Failed to build DAG from search data");
+      if (!dag) throw new Error("Failed to build DAG from search data");
 
-      const math = generateMathFromDAG(dag);
+      // ━━━ STEP 2: 3-DAG 앙상블 엔진 실행 ━━━
+      setPhase(2);
+      let engineResults = [];
+      const dags = dag.dags || [dag];
+      const engineOk = engineReady;
 
+      for (const d of dags) {
+        const dagInput = { nodes: d.nodes, edges: d.edges, correlations: dag.correlations || [] };
+        if (engineOk) {
+          try {
+            const r = await runFullAnalysis(dagInput);
+            if (r) engineResults.push({ name: d.name || "BASE", result: r });
+          } catch { engineResults.push({ name: d.name || "BASE", result: generateMathFromDAG(d) }); }
+        } else if (typeof generateMathFromDAG === 'function') {
+          const jsMath = generateMathFromDAG(d);
+          if (jsMath) engineResults.push({ name: d.name || "BASE", result: jsMath });
+        }
+      }
+
+      let engineResult;
+      if (engineResults.length > 1) {
+        const allResults = engineResults.map(e => e.result);
+        engineResult = allResults[1] || allResults[0];
+        engineResult.ensemble = {
+          count: engineResults.length,
+          dags: engineResults.map(e => ({
+            name: e.name,
+            confidence: e.result?.confidence?.score || 50,
+            turnstile: e.result?.turnstile?.label || "N/A",
+            perf_ms: e.result?.perf?.ms || 0,
+          })),
+          avg_confidence: Math.round(
+            engineResults.reduce((s, e) => s + (e.result?.confidence?.score || 50), 0) / engineResults.length
+          ),
+        };
+        if (allResults[1]?.math) engineResult.math = allResults[1].math;
+      } else if (engineResults.length === 1) {
+        engineResult = engineResults[0].result;
+      } else {
+        engineResult = dag;
+      }
+
+      // ━━━ STEP 3: Claude → 앙상블 수학 결과 기반 결론 작성 ━━━
+      setPhase(5);
+      const verdictPayload = { ...dag, engine: engineResult };
       const verdictRes = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST", headers: apiHeaders,
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 2048, messages: [{ role: "user", content: VERDICT_PROMPT + `\n\nIMPORTANT: Write ALL text values in ${LANG_NAME[lang] || "English"}. Keep JSON keys in English.\n\nDAG and search data:\n${JSON.stringify(dag)}\n\nReturn ONLY JSON.` }] }),
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 2048, messages: [{ role: "user", content: VERDICT_PROMPT + `\n\nIMPORTANT: Write ALL text values in ${LANG_NAME[lang] || "English"}. Keep JSON keys in English.\n\nDAG and engine data:\n${JSON.stringify(verdictPayload)}\n\nReturn ONLY JSON.` }] }),
       });
       const p = extractJSON(await verdictRes.json());
       if (!p) throw new Error("Failed to generate verdict");
 
       if (!p.dirColor) p.dirColor = p.direction === "UP" ? C.g : p.direction === "DOWN" ? C.r : C.a;
-      p.math = math || (p.dr ? generateMath(p.dr) : null);
+      p.math = engineResult?.math || (p.dr ? generateMath(p.dr) : null);
       if (dag.sources || dag.searched_facts) p.sources = dag.searched_facts || dag.sources;
+      if (engineResult?.surprises) p.surprises = engineResult.surprises;
+      if (engineResult?.tipping_points) p.tipping_points = engineResult.tipping_points;
+      if (engineResult?.confidence?.breakdown) p.confidence_breakdown = engineResult.confidence.breakdown;
       rateLimiter.record();
       clearInterval(pt); setPhase(PH.length); setResult(p);
     } catch (e) { clearInterval(pt); setResult({ verdict: `Error: ${e.message}`, direction: "\u2014", dirColor: "#bbb", confidence: 0 }); }
@@ -452,7 +568,12 @@ export default function Turnstile() {
         <img src="./logo.png" alt="" style={{ width: 110, height: 73, objectFit: "contain", marginBottom: 2 }} onError={e => { e.target.style.display = "none"; }} />
         <div style={{ fontSize: 26, fontWeight: 700, background: `linear-gradient(135deg,${C.p},${C.p2})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>TURNSTILE</div>
         <div style={{ fontSize: 11, color: "#aaa", marginTop: 2 }}>{t.sub}</div>
-        <div style={{ fontSize: 9, color: "#bbb", marginTop: 4 }}>0 LLM for math \u00B7 39ms \u00B7 $0.04/query \u00B7 Apache 2.0</div>
+        <div style={{ fontSize: 9, color: "#bbb", marginTop: 4 }}>
+          0 LLM for math · 39ms · $0.04/query · Apache 2.0 ·{" "}
+          {engineReady
+            ? <span style={{ color: "#22c55e" }}>● Python engine</span>
+            : <span style={{ color: "#f59e0b" }}>{engineStatus || "Loading engine..."}</span>}
+        </div>
       </div>
 
       <div style={{ position: "relative", marginBottom: 8 }}>
@@ -533,9 +654,39 @@ export default function Turnstile() {
               <div style={{ fontSize: 9, color: C.v, fontWeight: 600, letterSpacing: 1.5, marginBottom: 4 }}>{t.src}</div>
               {Array.isArray(r.sources) ? r.sources.map((s, i) => <div key={i} style={{ fontSize: 11, color: "#bbb", lineHeight: 1.5 }}>{"\u2022"} {s}</div>) : <div style={{ fontSize: 11, color: "#bbb", lineHeight: 1.5 }}>{r.sources}</div>}
             </div></Reveal>}
+
+            {r.ensemble_note && <Reveal delay={1500}><div style={{ padding: "8px 12px", borderLeft: "2px solid rgba(245,158,11,.2)", marginBottom: 10, background: "rgba(245,158,11,.03)" }}>
+              <span style={{ fontSize: 9, color: "#f59e0b", fontWeight: 600 }}>ENSEMBLE </span>
+              <span style={{ fontSize: 11, color: "#888" }}>{r.ensemble_note}</span>
+            </div></Reveal>}
           </>}
 
-          {tab === "math" && <Reveal delay={100}>{r.math ? <MathViz math={r.math} /> : <div style={{ padding: 16, textAlign: "center", color: "#aaa", fontSize: 12 }}>Not enough driver data to generate math visualization.</div>}</Reveal>}
+          {tab === "math" && <Reveal delay={100}>
+            {r.math ? <MathViz math={r.math} /> : <div style={{ padding: 16, textAlign: "center", color: "#aaa", fontSize: 12 }}>Not enough driver data to generate math visualization.</div>}
+            {r.surprises?.length > 0 && <div style={{ marginTop: 16 }}>
+              <div style={{ fontSize: 9, color: "#555", letterSpacing: 2, fontWeight: 600, marginBottom: 6 }}>SURPRISES</div>
+              {r.surprises.filter(s => s.type !== "aligned").slice(0, 4).map((s, i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "4px 0", fontSize: 11 }}>
+                  <span style={{ color: "#bbb" }}>{s.label}</span>
+                  <span style={{ color: s.type === "underrated" ? "#22c55e" : "#ef4444", fontWeight: 600 }}>
+                    {s.type === "underrated" ? "\u25B2 UNDERRATED" : "\u25BC OVERRATED"} ({(s.gap * 100).toFixed(0)}%)
+                  </span>
+                </div>
+              ))}
+            </div>}
+            {r.confidence_breakdown && <div style={{ marginTop: 16 }}>
+              <div style={{ fontSize: 9, color: "#555", letterSpacing: 2, fontWeight: 600, marginBottom: 6 }}>ENGINE CONFIDENCE</div>
+              {Object.entries(r.confidence_breakdown).map(([k, v]) => (
+                <div key={k} style={{ display: "flex", alignItems: "center", gap: 8, padding: "3px 0" }}>
+                  <span style={{ fontSize: 10, color: "#aaa", width: 90, textTransform: "capitalize" }}>{k.replace(/_/g, " ")}</span>
+                  <div style={{ flex: 1, height: 3, background: "rgba(255,255,255,.04)", borderRadius: 2, overflow: "hidden" }}>
+                    <div style={{ width: `${v}%`, height: "100%", background: v > 60 ? `${C.g}66` : `${C.a}66`, borderRadius: 2 }} />
+                  </div>
+                  <span style={{ fontSize: 10, color: "#aaa", fontFamily: "monospace", width: 30, textAlign: "right" }}>{v}</span>
+                </div>
+              ))}
+            </div>}
+          </Reveal>}
 
           <Reveal delay={tab === "math" ? 200 : 1400}><div style={{ textAlign: "center", padding: ".5rem 0" }}>
             <button onClick={() => { setResult(null); setInput(""); setTyped(false); ref.current?.focus(); }} style={{ padding: "6px 24px", background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.04)", borderRadius: 8, color: "#aaa", cursor: "pointer", fontSize: 12, fontFamily: "inherit" }} onMouseEnter={e => e.target.style.borderColor = `${C.p}22`} onMouseLeave={e => e.target.style.borderColor = "rgba(255,255,255,.04)"}>{t.nw}</button>
