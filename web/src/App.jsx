@@ -264,12 +264,29 @@ const TODAY = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'n
 
 const DAG_PROMPT = `You are TURNSTILE. Today is ${TODAY}.
 
-STEP 1: Use web_search to find:
-  - Current price/value of the asset
-  - Recent news (last 7 days)
-  - Key financial data (earnings, volume, institutional flows)
+RULE #1: SEARCH BEFORE ANYTHING
+You MUST use web_search to find:
+- Current real price of the asset
+- Recent news (last 7 days)
+- Key financial data
 
-STEP 2: Based on SEARCHED data only, construct a causal DAG.
+RULE #2: NO NUMBER WITHOUT SEARCH
+For every number in your output, it must come from a search result.
+- \u2705 "Q4 revenue 93.81T won" \u2192 found via search
+- \u274C "\u20A9450B pension fund block sell" \u2192 you made this up. DELETE IT.
+- \u274C "KOSPI crashed 18%" \u2192 did you search this? No. DELETE IT.
+- \u274C "Foreign investors dump \u20A9300B" \u2192 not from search. DELETE IT.
+
+RULE #3: SELF-CHECK
+Before returning JSON, go through every number and ask:
+"Which search result contains this exact number?"
+If the answer is "none" \u2192 REMOVE that number from your response.
+
+RULE #4: IF YOU DON'T KNOW, SAY SO
+- No search result for price \u2192 "current_price": "unavailable"
+- Mixed signals \u2192 priors should be 0.4-0.5, not 0.8
+- Uncertain \u2192 confidence must be low (30-50%), not 70%
+
 Return ONLY JSON (no markdown, no backticks):
 {
   "current_price": "real price from search",
@@ -290,15 +307,14 @@ Return ONLY JSON (no markdown, no backticks):
   "correlations": []
 }
 
-RULES:
-- Minimum 4 nodes, maximum 6 nodes
-- Every node label must reference real data from your search
-- Every prior probability must be justified by searched evidence
-- Do NOT invent institutional flows, crash events, or block orders without search evidence
-- If you didn't search it, don't include it
-- Include at least 3 searched_facts with real numbers`;
+Every label must reference real searched data. Minimum 4 nodes, maximum 6.
+Include at least 3 searched_facts with real numbers from your search.`;
 
-const VERDICT_PROMPT = `You are TURNSTILE. Today is ${TODAY}.
+const VERDICT_PROMPT = `ANTI-HALLUCINATION: Every number in your response must come from either:
+(a) the searched_facts in the DAG, or (b) the engine math results.
+If a number came from neither \u2192 DELETE IT. Do not invent institutional flows, block orders, or crash events.
+
+You are TURNSTILE. Today is ${TODAY}.
 
 Based on the DAG structure and real search data provided, write a sharp, falsifiable prediction.
 
