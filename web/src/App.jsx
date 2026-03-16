@@ -364,7 +364,20 @@ Return ONLY JSON (no markdown, no backticks):
 }
 
 Each DAG should have 6-10 nodes and 10-15 edges.
-The 3 DAGs use the SAME searched facts but different prior weights.`;
+The 3 DAGs use the SAME searched facts but different prior weights.
+
+━━━ HYPOTHETICAL SCENARIO DAG RULES ━━━
+When the user asks "what if X happens":
+- The "seed" node IS the hypothetical event (prior = 1.0, it happened)
+- Build the causal chain FORWARD from that event
+- Include both negative AND positive consequences
+- But the DAG must have a DOMINANT pathway — not 50/50 balanced
+- Use searched data to calibrate: "previous tariff → 6-7.5% drop" → this informs edge probabilities
+- The 3 DAGs (Bull/Base/Bear) should differ in SEVERITY, not direction:
+  BULL: Tariff announced but exemptions quick → NVDA -5%
+  BASE: Tariff sticks for weeks → NVDA -12%
+  BEAR: Tariff + China retaliation → NVDA -20%
+  (All three say DOWN, they disagree on HOW MUCH)`;
 
 const VERDICT_PROMPT = `You are TURNSTILE verdict writer. Today is ${TODAY}.
 
@@ -375,6 +388,45 @@ DATE RULES:
 ANTI-HALLUCINATION:
 - Every number must come from searched_facts or engine results.
 - No invented flows, block orders, or crash events.
+
+━━━ HYPOTHETICAL SCENARIOS (핵심) ━━━
+
+TURNSTILE's PURPOSE is answering "what if" questions with sharp, specific predictions.
+"If Trump announces 100% tariffs on TSMC" IS the kind of question we exist for.
+
+RULES FOR HYPOTHETICAL SCENARIOS:
+1. NEVER answer "MIXED" or "uncertain" — that's useless. Anyone can say that.
+2. ALWAYS pick a direction. Use Bayesian inversion logic:
+   - Assume the outcome happened (e.g. "tariffs announced")
+   - What HAD to follow? (TSMC supplies 90% of NVIDIA GPUs → no alternative → price drops)
+   - How much? (Search for: previous tariff impact on NVDA, TSMC revenue share, alternative suppliers)
+   - When does it recover? (Search for: TSMC Arizona timeline, NVIDIA US manufacturing plans)
+
+3. Structure your answer as TURNSTILE analysis:
+   - VERDICT: "[Asset] drops/rises to $X because [specific causal chain]"
+   - MECHANISM: The unavoidable chain of events (not "uncertainty persists")
+   - TURNSTILE POINT: The moment where recovery begins or damage becomes permanent
+   - WRONG IF: The specific condition that breaks the causal chain
+
+4. Even if you're uncertain, PICK THE MORE LIKELY DIRECTION and explain why:
+   BAD:  "MIXED signals, could go either way, 50% confidence"
+   GOOD: "NVIDIA drops 12% to $161 in 48 hours — TSMC manufactures 90% of NVIDIA's
+          GPUs with no alternative supplier at scale. Arizona fabs won't be operational
+          until 2028. Previous tariff announcements caused 6-7.5% drops; 100% tariff
+          doubles the severity. Recovery begins when TSMC exemption is confirmed (72h
+          typical timeline based on previous rounds). Wrong if NVIDIA announces emergency
+          Samsung foundry deal within 24 hours."
+
+5. CONFIDENCE for hypothetical scenarios:
+   - 60-70%: Strong causal logic + historical precedent exists
+   - 50-59%: Logical chain but limited precedent
+   - 40-49%: Speculative but defensible
+   - NEVER below 40% — if your logic is that weak, pick the other direction
+   - NEVER "MIXED" — that's not a prediction, that's a cop-out
+
+6. The value of TURNSTILE is NOT predicting the future perfectly.
+   It's showing the CAUSAL CHAIN: why this outcome MUST follow from these conditions.
+   Even if the prediction is wrong, the causal analysis has value.
 
 ENSEMBLE INTERPRETATION:
 You receive results from 3 DAGs (BULL/BASE/BEAR).
