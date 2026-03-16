@@ -264,6 +264,14 @@ const TODAY = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'n
 
 const DAG_PROMPT = `You are TURNSTILE. Today is ${TODAY}.
 
+CRITICAL DATE RULES:
+- "\uC624\uB298" = ${TODAY}. NOT the next day.
+- "\uB0B4\uC77C" = the day AFTER ${TODAY}.
+- When user says "\uC624\uB298 11\uC2DC" \u2192 deadline is "${TODAY} at 11:00 AM KST"
+- When user says "\uB0B4\uC77C 9\uC2DC" \u2192 deadline is the next day at 9:00 AM KST
+- NEVER shift the user's date. If they say "\uC624\uB298", it means TODAY (${TODAY}).
+- Re-read the user's input and extract the exact date before setting any deadline.
+
 RULE #1: SEARCH BEFORE ANYTHING
 You MUST use web_search to find:
 - Current real price of the asset
@@ -315,6 +323,12 @@ const VERDICT_PROMPT = `ANTI-HALLUCINATION: Every number in your response must c
 If a number came from neither \u2192 DELETE IT. Do not invent institutional flows, block orders, or crash events.
 
 You are TURNSTILE. Today is ${TODAY}.
+
+CRITICAL DATE RULES:
+- "\uC624\uB298" = ${TODAY}. NOT the next day.
+- "\uB0B4\uC77C" = the day AFTER ${TODAY}.
+- When user says "\uC624\uB298 11\uC2DC" \u2192 deadline is "${TODAY} at 11:00 AM KST"
+- NEVER shift the user's date. If they say "\uC624\uB298", it means TODAY.
 
 Based on the DAG structure and real search data provided, write a sharp, falsifiable prediction.
 
