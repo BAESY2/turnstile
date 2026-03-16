@@ -616,8 +616,63 @@ export default function Turnstile() {
   const di = d => d === "u" ? "\u25B2" : d === "d" ? "\u25BC" : "\u25CF";
 
   return (
-    <div style={{ fontFamily: "'SF Pro Display',-apple-system,sans-serif", color: "#d4d4d4", maxWidth: 740, margin: "0 auto", padding: "0 20px" }}>
-      <style>{`@keyframes bk{50%{opacity:0}}@keyframes si{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}@keyframes bg{from{transform:scaleX(0)}to{transform:scaleX(1)}}@keyframes gl{0%,100%{border-color:rgba(0,212,255,.1)}50%{border-color:rgba(0,212,255,.28)}}@keyframes br{0%,100%{opacity:.3}50%{opacity:.8}}@keyframes pu{0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,.4)}50%{box-shadow:0 0 0 6px rgba(0,212,255,0)}}input::placeholder{color:#888}input:focus{border-color:rgba(0,212,255,.35)!important}`}</style>
+    <div style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif", color: "#d4d4d4", maxWidth: 740, margin: "0 auto", padding: "0 20px" }}>
+      <style>{`
+  @keyframes bk { 50% { opacity: 0 } }
+  @keyframes si { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
+  @keyframes bg { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+  @keyframes gl { 0%,100% { box-shadow: 0 0 0 1px rgba(0,212,255,.08) } 50% { box-shadow: 0 0 0 1px rgba(0,212,255,.2), 0 0 20px rgba(0,212,255,.05) } }
+  @keyframes br { 0%,100% { opacity: .3 } 50% { opacity: .8 } }
+  @keyframes pu { 0%,100% { box-shadow: 0 0 0 0 rgba(0,212,255,.3) } 50% { box-shadow: 0 0 0 8px rgba(0,212,255,0) } }
+  @keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
+  @keyframes gridMove { 0% { background-position: 0 0 } 100% { background-position: 40px 40px } }
+  @keyframes gradientShift { 0% { background-position: 0% 50% } 50% { background-position: 100% 50% } 100% { background-position: 0% 50% } }
+  @keyframes typeGlow { 0%,100% { text-shadow: 0 0 10px rgba(0,212,255,.3) } 50% { text-shadow: 0 0 20px rgba(0,212,255,.5) } }
+  
+  input::placeholder { color: rgba(255,255,255,.2) }
+  input:focus { border-color: rgba(0,212,255,.3) !important; box-shadow: 0 0 0 4px rgba(0,212,255,.05) !important; }
+  
+  ::-webkit-scrollbar { width: 4px }
+  ::-webkit-scrollbar-track { background: transparent }
+  ::-webkit-scrollbar-thumb { background: rgba(0,212,255,.15); border-radius: 4px }
+  
+  .glass {
+    background: rgba(255,255,255,.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.05);
+    border-radius: 16px;
+  }
+  .glass-strong {
+    background: rgba(0,212,255,.03);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(0,212,255,.1);
+    border-radius: 20px;
+  }
+  .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace }
+  .sans { font-family: 'Plus Jakarta Sans', sans-serif }
+  
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .card-hover { transition: all .3s ease }
+  .card-hover:hover { border-color: rgba(0,212,255,.15); transform: translateY(-1px) }
+`}</style>
 
       {showKey && <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.75)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 999 }} onClick={() => setShowKey(false)}><div onClick={e => e.stopPropagation()} style={{ background: "#111", border: "1px solid rgba(0,212,255,.12)", borderRadius: 16, padding: "24px 28px", width: 400, maxWidth: "90vw" }}>
         <div style={{ fontSize: 16, fontWeight: 600, color: C.p, marginBottom: 4 }}>{t.api}</div>
@@ -629,69 +684,179 @@ export default function Turnstile() {
         </div>
       </div></div>}
 
-      <div style={{ textAlign: "center", padding: "2rem 0 .8rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <div style={{ display: "flex", gap: 3 }}>{Object.keys(LANG).map(l => <button key={l} onClick={() => setLang(l)} style={{ padding: "2px 8px", background: lang === l ? "rgba(0,212,255,.1)" : "transparent", border: lang === l ? "1px solid rgba(0,212,255,.2)" : "1px solid rgba(255,255,255,.03)", borderRadius: 5, color: lang === l ? C.p : "#aaa", cursor: "pointer", fontSize: 10, fontFamily: "inherit" }}>{{ en: "EN", ko: "\uD55C", zh: "\u4E2D", ja: "\u65E5" }[l]}</button>)}</div>
-          {!BUILT_IN_KEY && <button onClick={() => { setKeyIn(apiKey); setShowKey(true); }} style={{ padding: "3px 10px", background: apiKey ? "rgba(34,197,94,.08)" : "rgba(255,255,255,.02)", border: apiKey ? "1px solid rgba(34,197,94,.15)" : "1px solid rgba(255,255,255,.05)", borderRadius: 5, color: apiKey ? C.g : "#aaa", cursor: "pointer", fontSize: 10, fontFamily: "inherit" }}>{apiKey ? "\u2713 API" : "\u26BF API"}</button>}
-        </div>
-        <img src="./logo.png" alt="" style={{ width: 110, height: 73, objectFit: "contain", marginBottom: 2 }} onError={e => { e.target.style.display = "none"; }} />
-        <div style={{ fontSize: 26, fontWeight: 700, background: `linear-gradient(135deg,${C.p},${C.p2})`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>TURNSTILE</div>
-        <div style={{ fontSize: 11, color: "#aaa", marginTop: 2 }}>{t.sub}</div>
-        <div style={{ fontSize: 9, color: "#bbb", marginTop: 4 }}>
-          0 LLM for math · 39ms · $0.04/query · Apache 2.0 ·{" "}
-          {engineReady
-            ? <span style={{ color: "#22c55e" }}>● Python engine</span>
-            : <span style={{ color: "#f59e0b" }}>{engineStatus || "Loading engine..."}</span>}
+      <div style={{ textAlign: "center", padding: "2.5rem 0 1.2rem", position: "relative" }}>
+        <div style={{ position: "absolute", inset: 0, opacity: .03, backgroundImage: "linear-gradient(rgba(0,212,255,.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,.3) 1px, transparent 1px)", backgroundSize: "40px 40px", animation: "gridMove 20s linear infinite" }} />
+        <div style={{ position: "relative" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+            <div style={{ display: "flex", gap: 2 }}>
+              {Object.keys(LANG).map(l => (
+                <button key={l} onClick={() => setLang(l)} className="sans" style={{
+                  padding: "4px 12px", borderRadius: 8,
+                  background: lang === l ? "rgba(0,212,255,.1)" : "transparent",
+                  border: lang === l ? "1px solid rgba(0,212,255,.2)" : "1px solid transparent",
+                  color: lang === l ? "#00d4ff" : "#444", cursor: "pointer", fontSize: 11, fontWeight: 500,
+                }}>{{ en: "EN", ko: "\uD55C", zh: "\u4E2D", ja: "\u65E5" }[l]}</button>
+              ))}
+            </div>
+            <button onClick={() => { setKeyIn(apiKey); setShowKey(true); }} className="mono" style={{
+              padding: "4px 14px", borderRadius: 8, fontSize: 10,
+              background: apiKey ? "rgba(34,197,94,.06)" : "rgba(255,255,255,.02)",
+              border: apiKey ? "1px solid rgba(34,197,94,.12)" : "1px solid rgba(255,255,255,.04)",
+              color: apiKey ? "#22c55e" : "#444", cursor: "pointer",
+            }}>{apiKey ? "● Connected" : "⚿ API Key"}</button>
+          </div>
+          <div style={{ position: "relative", display: "inline-block" }}>
+            <div style={{ position: "absolute", inset: -20, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,212,255,.06) 0%, transparent 70%)", animation: "float 6s ease-in-out infinite" }} />
+            <img src="./logo.png" alt="" style={{ width: 100, height: 67, objectFit: "contain", position: "relative" }} onError={e => e.target.style.display = "none"} />
+          </div>
+          <div className="sans" style={{ fontSize: 32, fontWeight: 800, letterSpacing: -1, marginTop: 4,
+            background: "linear-gradient(135deg, #00d4ff 0%, #0ea5e9 50%, #00d4ff 100%)",
+            backgroundSize: "200% 200%", animation: "gradientShift 4s ease infinite",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>TURNSTILE</div>
+          <div className="sans" style={{ fontSize: 13, color: "#556", marginTop: 4, fontWeight: 500 }}>{t.sub}</div>
+          <div className="mono" style={{ display: "inline-flex", gap: 6, marginTop: 8, fontSize: 10, color: "#445", alignItems: "center" }}>
+            <span style={{ padding: "2px 8px", borderRadius: 4, background: "rgba(0,212,255,.05)", color: "#00d4ff" }}>0 LLM</span>
+            <span>·</span><span>39ms</span><span>·</span><span>$0.04</span>
+            <span>·</span>
+            <span style={{ color: engineReady ? "#22c55e" : "#f59e0b" }}>
+              {engineReady ? "● Engine" : engineStatus || "Loading engine..."}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div style={{ position: "relative", marginBottom: 8 }}>
-        <input ref={ref} value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && run(input)} placeholder={t.ph} style={{ width: "100%", padding: "14px 60px 14px 18px", background: "rgba(255,255,255,.025)", border: "1px solid rgba(255,255,255,.06)", borderRadius: 12, color: "#e4e4e4", fontSize: 15, fontFamily: "inherit", outline: "none", transition: "border .3s" }} />
-        <button onClick={() => run(input)} disabled={loading} style={{ position: "absolute", right: 5, top: 5, bottom: 5, padding: "0 20px", background: loading ? "rgba(0,212,255,.1)" : `linear-gradient(135deg,${C.p},${C.p2})`, border: "none", borderRadius: 9, color: loading ? C.p : "#000", cursor: loading ? "default" : "pointer", fontSize: 16, fontWeight: 700 }}>{loading ? "..." : "\u26A1"}</button>
+      <div style={{ position: "relative", marginBottom: 12 }}>
+        <div className="glass" style={{ padding: 4, borderRadius: 16 }}>
+          <input ref={ref} value={input} onChange={e => setInput(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && run(input)}
+            placeholder={t.ph} className="sans"
+            style={{
+              width: "100%", padding: "16px 64px 16px 20px",
+              background: "transparent", border: "none", borderRadius: 12,
+              color: "#e8e8e8", fontSize: 15, fontWeight: 500, outline: "none",
+            }} />
+          <button onClick={() => run(input)} disabled={loading} style={{
+            position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
+            width: 44, height: 44, borderRadius: 12,
+            background: loading ? "rgba(0,212,255,.08)" : "linear-gradient(135deg, #00d4ff, #0ea5e9)",
+            border: "none", color: loading ? "#00d4ff" : "#000",
+            cursor: loading ? "default" : "pointer", fontSize: 18, fontWeight: 700,
+            boxShadow: loading ? "none" : "0 4px 20px rgba(0,212,255,.25)",
+            transition: "all .2s",
+          }}>{"\u26A1"}</button>
+        </div>
       </div>
-      {!result && !loading && <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 16 }}>{EXAMPLES.map((ex, i) => <button key={i} onClick={() => { setInput(ex); run(ex); }} style={{ padding: "5px 14px", background: "rgba(255,255,255,.01)", border: "1px solid rgba(255,255,255,.04)", borderRadius: 16, color: "#aaa", cursor: "pointer", fontSize: 11, fontFamily: "inherit", transition: "all .2s" }} onMouseEnter={e => { e.target.style.borderColor = "rgba(0,212,255,.2)"; e.target.style.color = "#ccc"; }} onMouseLeave={e => { e.target.style.borderColor = "rgba(255,255,255,.04)"; e.target.style.color = "#aaa"; }}>{ex}</button>)}</div>}
+      {!result && !loading && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 20 }}>
+          {EXAMPLES.map((ex, i) => (
+            <button key={i} onClick={() => { setInput(ex); run(ex); }} className="sans card-hover" style={{
+              padding: "8px 16px", borderRadius: 100,
+              background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.04)",
+              color: "#556", cursor: "pointer", fontSize: 12, fontWeight: 500,
+            }}>{ex}</button>
+          ))}
+        </div>
+      )}
 
-      {loading && <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>{PH.map((p, i) => <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 8px", borderRadius: 6, background: i === phase ? "rgba(0,212,255,.03)" : "transparent", opacity: i <= phase ? 1 : .1, animation: i <= phase ? `si .3s ${i*.04}s both` : "none" }}>
-        <div style={{ width: 14, height: 14, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8, background: i < phase ? "rgba(34,197,94,.1)" : i === phase ? "rgba(0,212,255,.12)" : "transparent", color: i < phase ? C.g : i === phase ? C.p : "#bbb", border: i === phase ? "1px solid rgba(0,212,255,.25)" : "none" }}>{i < phase ? "\u2713" : i === phase ? "\u25D0" : "\u25CB"}</div>
-        <span style={{ fontSize: 12, color: i === phase ? "#ddd" : i < phase ? "#aaa" : "#bbb" }}>{p}</span>
-        {i === phase && <span style={{ fontSize: 9, color: C.p, marginLeft: "auto", animation: "br 1.2s infinite" }}>active</span>}
-      </div>)}</div>}
+      {loading && <div className="glass" style={{ padding: "20px", marginTop: 8 }}>
+        {PH.map((p, i) => (
+          <div key={i} style={{
+            display: "flex", alignItems: "center", gap: 12, padding: "8px 10px", borderRadius: 8,
+            background: i === phase ? "rgba(0,212,255,.04)" : "transparent",
+            opacity: i <= phase ? 1 : .1, transition: "all .4s",
+            animation: i <= phase ? `si .3s ${i * .05}s both` : "none",
+          }}>
+            <div style={{
+              width: 20, height: 20, borderRadius: "50%",
+              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10,
+              background: i < phase ? "rgba(34,197,94,.1)" : i === phase ? "rgba(0,212,255,.1)" : "transparent",
+              color: i < phase ? "#22c55e" : i === phase ? "#00d4ff" : "#333",
+              border: i === phase ? "1px solid rgba(0,212,255,.25)" : "1px solid transparent",
+            }}>{i < phase ? "\u2713" : i === phase ? "\u25D0" : "\u25CB"}</div>
+            <span className="sans" style={{ fontSize: 13, fontWeight: i === phase ? 600 : 400, color: i === phase ? "#eee" : i < phase ? "#666" : "#333" }}>{p}</span>
+            {i === phase && <span className="mono" style={{ fontSize: 10, color: "#00d4ff", marginLeft: "auto", animation: "br 1.2s infinite" }}>active</span>}
+          </div>
+        ))}
+      </div>}
 
       {r && !loading && <div>
         {/* VERDICT */}
-        <Reveal delay={0}><div style={{ padding: "22px 20px", background: "rgba(0,212,255,.03)", border: "1px solid rgba(0,212,255,.1)", borderRadius: 14, animation: "gl 5s ease infinite", marginBottom: 8 }}>
-          <div style={{ fontSize: 18, fontWeight: 700, color: "#f0f0f0", lineHeight: 1.5, marginBottom: 10 }}>
-            <TypeWriter text={r.verdict || r.prediction || ""} speed={12} onDone={() => setTyped(true)} />
+        <Reveal delay={0}>
+          <div className="glass-strong" style={{ padding: "28px 24px", animation: "gl 5s ease infinite", marginBottom: 12 }}>
+            <div className="sans" style={{ fontSize: 20, fontWeight: 700, color: "#f0f0f0", lineHeight: 1.6, letterSpacing: -.3 }}>
+              <TypeWriter text={r.verdict || r.prediction || ""} speed={12} onDone={() => setTyped(true)} />
+            </div>
+            {typed && r.direction && r.direction !== "\u2014" && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14, animation: "si .5s ease" }}>
+                <div className="badge" style={{
+                  background: `${r.dirColor}15`,
+                  border: `1px solid ${r.dirColor}33`,
+                  color: r.dirColor,
+                }}>{r.direction === "UP" ? "\u25B2" : r.direction === "DOWN" ? "\u25BC" : "\u25C6"} {r.direction}</div>
+                {r.target && <div className="badge" style={{
+                  background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)", color: "#ccc",
+                }}>{r.target}</div>}
+                {r.deadline && <div className="badge" style={{
+                  background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.04)", color: "#888",
+                }}>{r.deadline}</div>}
+              </div>
+            )}
+            {typed && (
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 14, animation: "si .5s ease" }}>
+                <span className="mono" style={{ fontSize: 11, color: "#556" }}>{t.conf}</span>
+                <div style={{ flex: 1, maxWidth: 120, height: 4, background: "rgba(255,255,255,.04)", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{
+                    width: `${r.confidence}%`, height: "100%", borderRadius: 4,
+                    background: r.confidence >= 65 ? "linear-gradient(90deg, #22c55e, #4ade80)" : r.confidence >= 45 ? "linear-gradient(90deg, #f59e0b, #fbbf24)" : "linear-gradient(90deg, #ef4444, #f87171)",
+                    animation: "bg 1.2s ease", transformOrigin: "left",
+                  }} />
+                </div>
+                <span className="mono" style={{
+                  fontSize: 16, fontWeight: 700,
+                  color: r.confidence >= 65 ? "#22c55e" : r.confidence >= 45 ? "#f59e0b" : "#ef4444",
+                }}>{r.confidence}%</span>
+              </div>
+            )}
           </div>
-          {typed && r.direction && r.direction !== "—" && <div style={{ display: "flex", flexWrap: "wrap", gap: 8, animation: "si .5s ease" }}>
-            <div style={{ padding: "4px 14px", borderRadius: 6, background: `${r.dirColor}18`, border: `1px solid ${r.dirColor}33`, fontSize: 12, fontWeight: 700, color: r.dirColor }}>{r.direction === "UP" ? "\u25B2" : "\u25BC"} {r.direction}</div>
-            {r.target && <div style={{ padding: "4px 14px", borderRadius: 6, background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)", fontSize: 12, color: "#ccc" }}>{t.tgt}: {r.target}</div>}
-            {r.deadline && <div style={{ padding: "4px 14px", borderRadius: 6, background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.06)", fontSize: 12, color: "#ccc" }}>{r.deadline}</div>}
-          </div>}
-          {typed && <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, animation: "si .5s ease" }}>
-            <span style={{ fontSize: 11, color: "#aaa" }}>{t.conf}</span>
-            <div style={{ width: 80, height: 3, background: "rgba(255,255,255,.04)", borderRadius: 2, overflow: "hidden" }}><div style={{ width: `${r.confidence}%`, height: "100%", borderRadius: 2, background: r.confidence >= 70 ? C.g : C.a, animation: "bg 1s ease", transformOrigin: "left" }} /></div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: r.confidence >= 70 ? C.g : C.a }}>{r.confidence}%</span>
-          </div>}
-        </div></Reveal>
+        </Reveal>
 
         {typed && <>
           {/* MECHANISM */}
-          {r.mechanism && <Reveal delay={200}><div style={{ padding: "12px 16px", background: "rgba(0,0,0,.15)", borderLeft: `2px solid ${C.p}44`, marginBottom: 8, borderRadius: 0 }}>
-            <div style={{ fontSize: 9, color: C.p, fontWeight: 600, letterSpacing: 2, marginBottom: 4 }}>{t.mech}</div>
-            <div style={{ fontSize: 13, color: "#bbb", lineHeight: 1.6 }}>{r.mechanism}</div>
-            {r.recovery && <div style={{ fontSize: 12, color: "#bbb", marginTop: 6, fontStyle: "italic" }}>{r.recovery}</div>}
-          </div></Reveal>}
+          {r.mechanism && <Reveal delay={200}>
+            <div className="glass" style={{ padding: "16px 20px", marginBottom: 10, borderLeft: "2px solid rgba(0,212,255,.3)" }}>
+              <div className="label" style={{ color: "#00d4ff", marginBottom: 8 }}>MECHANISM</div>
+              <div className="sans" style={{ fontSize: 14, color: "#bbb", lineHeight: 1.7, fontWeight: 400 }}>{r.mechanism}</div>
+              {r.recovery && <div className="sans" style={{ fontSize: 13, color: "#778", marginTop: 8, fontStyle: "italic", lineHeight: 1.6 }}>{r.recovery}</div>}
+            </div>
+          </Reveal>}
 
-          <Reveal delay={350}><div style={{ display: "flex", gap: 0, borderBottom: "1px solid rgba(255,255,255,.05)", marginBottom: 10 }}>
-            {["result","math"].map(tb => <button key={tb} onClick={() => setTab(tb)} style={{ padding: "8px 20px", background: "transparent", border: "none", borderBottom: tab === tb ? `2px solid ${C.p}` : "2px solid transparent", color: tab === tb ? C.p : "#aaa", cursor: "pointer", fontSize: 11, fontFamily: "inherit", fontWeight: 500, letterSpacing: 1 }}>{tb === "result" ? t.an : t.wp}</button>)}
-          </div></Reveal>
+          <Reveal delay={350}>
+            <div style={{ display: "inline-flex", gap: 2, padding: 3, borderRadius: 10, background: "rgba(255,255,255,.02)", marginBottom: 14 }}>
+              {["result", "math"].map(tb => (
+                <button key={tb} onClick={() => setTab(tb)} className="sans" style={{
+                  padding: "8px 22px", borderRadius: 8, border: "none",
+                  background: tab === tb ? "rgba(0,212,255,.1)" : "transparent",
+                  color: tab === tb ? "#00d4ff" : "#556",
+                  cursor: "pointer", fontSize: 12, fontWeight: 600, letterSpacing: .5,
+                  transition: "all .2s",
+                }}>{tb === "result" ? t.an : t.wp}</button>
+              ))}
+            </div>
+          </Reveal>
 
           {tab === "result" && <>
-            <Reveal delay={400}><div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
-              {r.te && <div style={{ padding: "10px 12px", background: `${C.a}06`, border: `1px solid ${C.a}12`, borderRadius: 10 }}><div style={{ fontSize: 9, color: C.a, fontWeight: 600, letterSpacing: 1.5, marginBottom: 3 }}>\u26A1 {r.tw}</div><div style={{ fontSize: 11, color: "#bbb", lineHeight: 1.4 }}>{r.te}</div></div>}
-              {r.hidden && <div style={{ padding: "10px 12px", background: `${C.g}05`, border: `1px solid ${C.g}0a`, borderRadius: 10 }}><div style={{ fontSize: 9, color: C.g, fontWeight: 600, letterSpacing: 1.5, marginBottom: 3 }}>{t.hid}</div><div style={{ fontSize: 11, color: "#bbb", lineHeight: 1.4 }}>{r.hidden}</div></div>}
-            </div></Reveal>
+            <Reveal delay={400}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
+                {r.te && <div className="glass card-hover" style={{ padding: "14px 16px" }}>
+                  <div className="label" style={{ color: "#f59e0b", marginBottom: 6 }}>{"\u26A1"} {r.tw}</div>
+                  <div className="sans" style={{ fontSize: 13, color: "#bbb", lineHeight: 1.5, fontWeight: 400 }}>{r.te}</div>
+                </div>}
+                {r.hidden && <div className="glass card-hover" style={{ padding: "14px 16px" }}>
+                  <div className="label" style={{ color: "#22c55e", marginBottom: 6 }}>HIDDEN</div>
+                  <div className="sans" style={{ fontSize: 13, color: "#bbb", lineHeight: 1.5, fontWeight: 400 }}>{r.hidden}</div>
+                </div>}
+              </div>
+            </Reveal>
 
             {r.tl?.length > 0 && <Reveal delay={550}><ResponsiveContainer width="100%" height={180}>
               <AreaChart data={r.tl} margin={{ left: -20, right: 8, top: 6, bottom: 0 }}>
@@ -708,26 +873,47 @@ export default function Turnstile() {
               {r.rd && <ResponsiveContainer width="100%" height={(r.sc?.length || 4) * 40}><RadarChart data={r.rd} margin={{ top: 8, right: 25, bottom: 8, left: 25 }}><PolarGrid stroke="rgba(255,255,255,.05)" /><PolarAngleAxis dataKey="a" tick={{ fill: "#aaa", fontSize: 9 }} /><PolarRadiusAxis tick={false} axisLine={false} domain={[0, 100]} /><Radar dataKey="v" stroke={C.p} fill={C.p} fillOpacity={.08} strokeWidth={1.5} animationDuration={1400} dot={{ r: 2.5, fill: C.p, strokeWidth: 0 }} /></RadarChart></ResponsiveContainer>}
             </div></Reveal>
 
-            {r.dr?.length > 0 && <Reveal delay={1000}><div style={{ marginBottom: 10 }}>{r.dr.map((d, i) => <div key={i} style={{ display: "flex", alignItems: "center", gap: 7, padding: "5px 0", animation: `si .4s ${i*.06}s both` }}>
-              <span style={{ fontSize: 10, color: dc(d.d), minWidth: 12, textAlign: "center", fontWeight: 600 }}>{di(d.d)}</span>
-              <div style={{ flex: 1, height: 2.5, background: "rgba(255,255,255,.03)", borderRadius: 2, overflow: "hidden" }}><div style={{ width: `${d.v}%`, height: "100%", background: `${dc(d.d)}44`, borderRadius: 2, animation: `bg .8s ${i*.06}s both`, transformOrigin: "left" }} /></div>
-              <span style={{ fontSize: 11, fontWeight: 600, color: dc(d.d), minWidth: 24, textAlign: "right" }}>{d.v}</span>
-              <span style={{ fontSize: 12, color: "#ccc", flex: 2 }}>{d.n}</span>
-            </div>)}</div></Reveal>}
+            {r.dr?.length > 0 && <Reveal delay={1000}>
+              <div style={{ marginBottom: 14 }}>
+                {r.dr.map((d, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", animation: `si .4s ${i * .08}s both` }}>
+                    <span className="mono" style={{ fontSize: 11, color: d.d === "u" ? "#22c55e" : d.d === "d" ? "#ef4444" : "#888", minWidth: 14, fontWeight: 700 }}>
+                      {d.d === "u" ? "\u25B2" : d.d === "d" ? "\u25BC" : "\u25CF"}
+                    </span>
+                    <div style={{ flex: 1, height: 4, background: "rgba(255,255,255,.03)", borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{
+                        width: `${d.v}%`, height: "100%", borderRadius: 4,
+                        background: d.d === "u" ? "linear-gradient(90deg, rgba(34,197,94,.2), rgba(34,197,94,.4))" : d.d === "d" ? "linear-gradient(90deg, rgba(239,68,68,.2), rgba(239,68,68,.4))" : "rgba(136,136,136,.2)",
+                        animation: `bg .8s ${i * .08}s both`, transformOrigin: "left",
+                      }} />
+                    </div>
+                    <span className="mono" style={{ fontSize: 13, fontWeight: 700, color: d.d === "u" ? "#22c55e" : d.d === "d" ? "#ef4444" : "#888", minWidth: 28, textAlign: "right" }}>{d.v}</span>
+                    <span className="sans" style={{ fontSize: 13, color: "#999", flex: 2, fontWeight: 400 }}>{d.n}</span>
+                  </div>
+                ))}
+              </div>
+            </Reveal>}
 
-            {r.wrong && <Reveal delay={1200}><div style={{ padding: "8px 12px", borderLeft: `2px solid ${C.r}33`, marginBottom: 10, background: `${C.r}04` }}>
-              <span style={{ fontSize: 9, color: C.r, fontWeight: 600 }}>{t.inv} </span><span style={{ fontSize: 11, color: "#bbb" }}>{r.wrong}</span>
-            </div></Reveal>}
+            {r.wrong && <Reveal delay={1200}>
+              <div className="glass" style={{ padding: "12px 16px", marginBottom: 10, borderLeft: "2px solid rgba(239,68,68,.3)" }}>
+                <span className="label" style={{ color: "#ef4444" }}>INVALIDATED IF </span>
+                <span className="sans" style={{ fontSize: 13, color: "#999", fontWeight: 400 }}>{r.wrong}</span>
+              </div>
+            </Reveal>}
 
-            {r.sources && <Reveal delay={1400}><div style={{ padding: "8px 12px", borderLeft: `2px solid ${C.v}33`, marginBottom: 10, background: `${C.v}04` }}>
-              <div style={{ fontSize: 9, color: C.v, fontWeight: 600, letterSpacing: 1.5, marginBottom: 4 }}>{t.src}</div>
-              {Array.isArray(r.sources) ? r.sources.map((s, i) => <div key={i} style={{ fontSize: 11, color: "#bbb", lineHeight: 1.5 }}>{"\u2022"} {s}</div>) : <div style={{ fontSize: 11, color: "#bbb", lineHeight: 1.5 }}>{r.sources}</div>}
-            </div></Reveal>}
+            {r.sources && <Reveal delay={1300}>
+              <div className="glass" style={{ padding: "12px 16px", marginBottom: 10, borderLeft: "2px solid rgba(0,212,255,.2)" }}>
+                <span className="label" style={{ color: "#00d4ff" }}>SOURCES </span>
+                {Array.isArray(r.sources) ? r.sources.map((s, i) => <div key={i} className="sans" style={{ fontSize: 12, color: "#778", fontWeight: 400, lineHeight: 1.6 }}>{"\u2022"} {s}</div>) : <span className="sans" style={{ fontSize: 12, color: "#778", fontWeight: 400, lineHeight: 1.6 }}>{r.sources}</span>}
+              </div>
+            </Reveal>}
 
-            {r.ensemble_note && <Reveal delay={1500}><div style={{ padding: "8px 12px", borderLeft: "2px solid rgba(245,158,11,.2)", marginBottom: 10, background: "rgba(245,158,11,.03)" }}>
-              <span style={{ fontSize: 9, color: "#f59e0b", fontWeight: 600 }}>ENSEMBLE </span>
-              <span style={{ fontSize: 11, color: "#888" }}>{r.ensemble_note}</span>
-            </div></Reveal>}
+            {r.ensemble_note && <Reveal delay={1400}>
+              <div className="glass" style={{ padding: "12px 16px", marginBottom: 10, borderLeft: "2px solid rgba(245,158,11,.2)" }}>
+                <span className="label" style={{ color: "#f59e0b" }}>ENSEMBLE </span>
+                <span className="sans" style={{ fontSize: 12, color: "#778", fontWeight: 400 }}>{r.ensemble_note}</span>
+              </div>
+            </Reveal>}
           </>}
 
           {tab === "math" && <Reveal delay={100}>
@@ -758,11 +944,16 @@ export default function Turnstile() {
           </Reveal>}
 
           <Reveal delay={tab === "math" ? 200 : 1400}><div style={{ textAlign: "center", padding: ".5rem 0" }}>
-            <button onClick={() => { setResult(null); setInput(""); setTyped(false); ref.current?.focus(); }} style={{ padding: "6px 24px", background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.04)", borderRadius: 8, color: "#aaa", cursor: "pointer", fontSize: 12, fontFamily: "inherit" }} onMouseEnter={e => e.target.style.borderColor = `${C.p}22`} onMouseLeave={e => e.target.style.borderColor = "rgba(255,255,255,.04)"}>{t.nw}</button>
-          </div>
-          <div style={{ textAlign: "center", fontSize: 9, color: "#aaa", padding: "2px 0 1rem" }}>TURNSTILE v3.3 \u00B7 Apache 2.0 \u00B7 <span style={{ color: `${C.p}22` }}>ZENION IT</span></div></Reveal>
+            <button onClick={() => { setResult(null); setInput(""); setTyped(false); ref.current?.focus(); }} className="sans card-hover" style={{ padding: "8px 28px", background: "rgba(255,255,255,.02)", border: "1px solid rgba(255,255,255,.04)", borderRadius: 10, color: "#556", cursor: "pointer", fontSize: 12, fontWeight: 500 }}>{t.nw}</button>
+          </div></Reveal>
         </>}
       </div>}
+
+      <div style={{ textAlign: "center", padding: "4px 0 2rem" }}>
+        <span className="mono" style={{ fontSize: 9, color: "#223" }}>
+          TURNSTILE v3.3 {"\u00B7"} Apache 2.0 {"\u00B7"} <span style={{ color: "rgba(0,212,255,.15)" }}>ZENION IT</span>
+        </span>
+      </div>
     </div>
   );
 }
